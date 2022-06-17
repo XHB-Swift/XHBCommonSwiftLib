@@ -30,8 +30,8 @@ extension UIColor: ColorType {
 
 open class GradientProgressView: UIView {
 
-    internal lazy var backgroundLayer = CAShapeLayer()
-    internal lazy var progressLayer = CAShapeLayer()
+    public let backgroundLayer = CAShapeLayer()
+    public let progressLayer = CAShapeLayer()
     private let gradientLayer = CAGradientLayer()
     
     public var progress: CGFloat = 0 {
