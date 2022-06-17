@@ -523,13 +523,13 @@ extension Double {
 }
 
 extension Default {
-    typealias True = Default<Bool.True>
-    typealias False = Default<Bool.False>
-    typealias IntZero = Default<Int.Zero>
-    typealias FloatZero = Default<Float.Zero>
-    typealias DoubleZero = Default<Double.Zero>
+    public typealias True = Default<Bool.True>
+    public typealias False = Default<Bool.False>
+    public typealias IntZero = Default<Int.Zero>
+    public typealias FloatZero = Default<Float.Zero>
+    public typealias DoubleZero = Default<Double.Zero>
     #if os(iOS)
-    typealias CGFloatZero = Default<CGFloat.Zero>
+    public typealias CGFloatZero = Default<CGFloat.Zero>
     #endif
-    typealias EmptyString = Default<String.Empty>
+    public typealias EmptyString = Default<String.Empty>
 }

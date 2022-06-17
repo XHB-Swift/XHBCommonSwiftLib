@@ -24,7 +24,7 @@ open class ContentBrowserViewCell<P: ContentBrowserPageData>: UICollectionViewCe
         return String(describing: self)
     }
     
-    private(set) var pageData: P?
+    public private(set) var pageData: P?
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -128,7 +128,7 @@ open class ContentBrowserCollectionView: UICollectionView {
         
         return cell
     }
-    private(set) var flowlayout: ContentBrowserFlowlayout?
+    public private(set) var flowlayout: ContentBrowserFlowlayout?
     private var cellIdentifiers = Set<String>()
     
     public required init?(coder: NSCoder) {
@@ -187,7 +187,7 @@ open class ContentBrowserViewModel<P: ContentBrowserPageData>: NSObject, UIColle
         }
     }
     
-    private(set) var realContentCount = 0
+    public private(set) var realContentCount = 0
     
     private var contents = Array<P>()
     
@@ -252,7 +252,7 @@ public protocol ContentBrowserViewDelegate: AnyObject {
 
 open class ContentBrowserView<P: ContentBrowserPageData>: UIView, UICollectionViewDelegate {
     
-    private(set) var collectionView: ContentBrowserCollectionView?
+    public private(set) var collectionView: ContentBrowserCollectionView?
     
     open var viewModel: ContentBrowserViewModel<P>? {
         didSet {
