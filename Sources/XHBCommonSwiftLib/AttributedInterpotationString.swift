@@ -98,13 +98,13 @@ extension AttributedInterpotationString {
             return Style(attributes: [.foregroundColor : color])
         }
         public static func color(_ colorString: String, _ defaultColor: UIColor = .black) -> Style {
-            return .color(ColorData(argbHexString: colorString)?.uiColor ?? defaultColor)
+            return .color(UIColor(argbHexString: colorString) ?? defaultColor)
         }
         public static func bgColor(_ color: UIColor) -> Style {
             return Style(attributes: [.backgroundColor : color])
         }
         public static func bgColor(_ colorString: String, _ defaultColor: UIColor = .black) -> Style {
-            return .bgColor(ColorData(argbHexString: colorString)?.uiColor ?? defaultColor)
+            return .bgColor(UIColor(argbHexString: colorString) ?? defaultColor)
         }
         public static func link(_ link: URL) -> Style {
             return Style(attributes: [.link : link])
@@ -119,7 +119,7 @@ extension AttributedInterpotationString {
             ])
         }
         public static func underline(_ colorString: String, _ defaultColor: UIColor = .black, _ style: NSUnderlineStyle) -> Style {
-            return .underline(ColorData(argbHexString: colorString)?.uiColor ?? defaultColor, style)
+            return .underline(UIColor(argbHexString: colorString) ?? defaultColor, style)
         }
 #else
         public static func font(_ font: NSFont) -> Style {
@@ -129,13 +129,13 @@ extension AttributedInterpotationString {
             return Style(attributes: [.foregroundColor : color])
         }
         public static func color(_ colorString: String, _ defaultColor: NSColor = .black) -> Style {
-            return .color(ColorData(argbHexString: colorString)?.nsColor ?? defaultColor)
+            return .color(NSColor(argbHexString: colorString) ?? defaultColor)
         }
         public static func bgColor(_ color: NSColor) -> Style {
             return Style(attributes: [.backgroundColor : color])
         }
         public static func bgColor(_ colorString: String, _ defaultColor: NSColor = .black) -> Style {
-            return .bgColor(ColorData(argbHexString: colorString)?.nsColor ?? defaultColor)
+            return .bgColor(NSColor(argbHexString: colorString) ?? defaultColor)
         }
         public static func link(_ link: URL) -> Style {
             return Style(attributes: [.link : link])
@@ -152,7 +152,7 @@ extension AttributedInterpotationString {
         public static func underline(_ colorString: String,
                                      _ defaultColor: NSColor = .black,
                                      _ style: NSUnderlineStyle) -> Style {
-            return .underline(ColorData(argbHexString: colorString)?.nsColor ?? defaultColor, style)
+            return .underline(NSColor(argbHexString: colorString) ?? defaultColor, style)
         }
 #endif
         public static let oblique = Style(attributes: [.obliqueness : 0.1])

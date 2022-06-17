@@ -127,7 +127,7 @@ extension UIOffset : TweenValue {
 
 extension CGAffineTransform : TweenValue {
     
-    public var values: [CGFloat] {
+    public var values: [Double] {
         set {
             if newValue.count <= 5 { return }
             a = newValue[0]; b = newValue[1]; c = newValue[2]; d = newValue[3]
@@ -144,7 +144,7 @@ extension CGAffineTransform : TweenValue {
 
 extension UIColor : TweenValue {
     
-    public var values: [CGFloat] {
+    public var values: [Double] {
         set {
             
         }
@@ -158,7 +158,7 @@ extension UIColor : TweenValue {
         }
     }
     
-    public static func color(from values: [CGFloat]) -> UIColor? {
+    public static func color(from values: [Double]) -> UIColor? {
         if values.count <= 3 { return nil }
         let r = values[0]
         let g = values[1]

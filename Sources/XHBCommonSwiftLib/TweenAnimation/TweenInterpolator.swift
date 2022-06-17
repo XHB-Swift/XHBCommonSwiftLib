@@ -75,7 +75,7 @@ public final class TweenInterpolator {
         return isEqual
     }
     
-    private func moveToNext(t: CGFloat, d: CGFloat) {
+    private func moveToNext(t: Double, d: Double) {
         
         if self.v0.count != self.v1.count { return }
         let indecies = (0..<self.v0.count)

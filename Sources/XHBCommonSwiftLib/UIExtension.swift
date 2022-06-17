@@ -7,94 +7,6 @@
 
 import ObjectiveC
 
-@frozen public struct ColorData {
-    public var red: Double
-    public var green: Double
-    public var blue: Double
-    public var alpha: Double
-    
-    public init(red: Double, green: Double, blue: Double, alpha: Double = 1) {
-        self.red = red / 255.0
-        self.green = green / 255.0
-        self.blue = blue / 255.0
-        self.alpha = max(min(alpha, 1), 0)
-    }
-    
-    public init?(hexString: String, alpha: Double = 1.0) {
-        var fixedHexStr = hexString
-        if hexString.hasPrefix("#") {
-            guard let fixedHex = hexString[(1..<hexString.count-1)] else { return nil }
-            if fixedHex.count != 6 && fixedHex.count != 8 {
-                return nil
-            }
-            fixedHexStr = fixedHex
-        }
-        
-        do {
-            let regex = try NSRegularExpression(pattern: "[^a-fA-F|0-9]", options: [])
-            let match = regex.numberOfMatches(in: fixedHexStr, options: [.reportCompletion], range: NSRange(location: 0, length: fixedHexStr.count))
-            if match != 0 {
-                return nil
-            }
-            self.init(argbHexString: fixedHexStr)
-        } catch {
-            return nil
-        }
-    }
-    
-    public init?(argbHexString: String) {
-        var argbHex = argbHexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
-        if argbHex.hasPrefix("#") {
-            guard let fixedHex = argbHex[(1..<argbHex.count-1)] else { return nil }
-            if fixedHex.count != 6 || fixedHex.count != 8 {
-                return nil
-            }
-            argbHex = fixedHex
-        }
-        
-        if argbHex.count == 8 {
-            let a = Double(argbHex[(0..<2)]?.hexStringToInt ?? 0)
-            let r = Double(argbHex[(2..<4)]?.hexStringToInt ?? 0)
-            let g = Double(argbHex[(4..<6)]?.hexStringToInt ?? 0)
-            let b = Double(argbHex[(6..<8)]?.hexStringToInt ?? 0)
-            self.init(red: r, green: g, blue: b, alpha: a)
-        }else if argbHex.count == 6 {
-            let r = Double(argbHex[(0..<2)]?.hexStringToInt ?? 0)
-            let g = Double(argbHex[(2..<4)]?.hexStringToInt ?? 0)
-            let b = Double(argbHex[(4..<6)]?.hexStringToInt ?? 0)
-            self.init(red: r, green: g, blue: b, alpha: 1.0)
-        }else {
-            return nil
-        }
-    }
-    
-    public static var randomColor: Self {
-        let red = Double(arc4random() % 256)
-        let green = Double(arc4random() % 256)
-        let blue = Double(arc4random() % 256)
-        return ColorData(red: red, green: green, blue: blue)
-    }
-}
-
-extension ColorData {
-    
-    var argbHexString: String? {
-        guard let rgbStr = rgbHexString else { return nil }
-        return "\(String(format: "%02X", Int(rgbStr.1 * 255.0)))\(rgbStr.0)"
-    }
-    
-    var rgbHexString: (String, Double)? {
-        var rStr = String(Int(255.0 * red), radix: 16),
-            gStr = String(Int(255.0 * green), radix: 16),
-            bStr = String(Int(255.0 * blue), radix: 16)
-        rStr = (rStr.count == 1) ? "0\(rStr)" : rStr
-        gStr = (gStr.count == 1) ? "0\(gStr)" : gStr
-        bStr = (bStr.count == 1) ? "0\(bStr)" : bStr
-        let rgb = "\(rStr)\(gStr)\(bStr)"
-        return (rgb,alpha)
-    }
-}
-
 #if os(iOS)
 
 import UIKit
@@ -322,10 +234,86 @@ extension CGFloat {
     public static let m_2_pi = pi * 2
 }
 
-extension ColorData {
+extension UIColor {
     
-    public var uiColor: UIColor {
-        return UIColor(red: red, green: green, blue: blue, alpha: alpha)
+    var argbHexString: String? {
+        guard let rgbStr = rgbHexString else { return nil }
+        return "\(String(format: "%02X", Int(rgbStr.1 * 255.0)))\(rgbStr.0)"
+    }
+    
+    var rgbHexString: (String, CGFloat)? {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        guard getRed(&r, green: &g, blue: &b, alpha: &a) else { return nil }
+        var rStr = String(Int(255.0 * r), radix: 16),
+            gStr = String(Int(255.0 * g), radix: 16),
+            bStr = String(Int(255.0 * b), radix: 16)
+        rStr = (rStr.count == 1) ? "0\(rStr)" : rStr
+        gStr = (gStr.count == 1) ? "0\(gStr)" : gStr
+        bStr = (bStr.count == 1) ? "0\(bStr)" : bStr
+        let rgb = "\(rStr)\(gStr)\(bStr)"
+        return (rgb,a)
+    }
+    
+    public convenience init(r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat = 1) {
+        self.init(red: r / 255.0, green: g / 255.0, blue: b / 255.0, alpha: a)
+    }
+    
+    public convenience init?(hexString: String, alpha: CGFloat = 1.0) {
+        var fixedHexStr = hexString
+        if hexString.hasPrefix("#") {
+            guard let fixedHex = hexString[(1..<hexString.count-1)] else { return nil }
+            if fixedHex.count != 6 && fixedHex.count != 8 {
+                return nil
+            }
+            fixedHexStr = fixedHex
+        }
+        
+        do {
+            let regex = try NSRegularExpression(pattern: "[^a-fA-F|0-9]", options: [])
+            let match = regex.numberOfMatches(in: fixedHexStr, options: [.reportCompletion], range: NSRange(location: 0, length: fixedHexStr.count))
+            if match != 0 {
+                return nil
+            }
+            self.init(argbHexString: fixedHexStr)
+        } catch {
+            return nil
+        }
+    }
+    
+    public convenience init?(argbHexString: String) {
+        var argbHex = argbHexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
+        if argbHex.hasPrefix("#") {
+            guard let fixedHex = argbHex[(1..<argbHex.count-1)] else { return nil }
+            if fixedHex.count != 6 || fixedHex.count != 8 {
+                return nil
+            }
+            argbHex = fixedHex
+        }
+        
+        if argbHex.count == 8 {
+            let a = CGFloat(argbHex[(0..<2)]?.hexStringToInt ?? 0)
+            let r = CGFloat(argbHex[(2..<4)]?.hexStringToInt ?? 0)
+            let g = CGFloat(argbHex[(4..<6)]?.hexStringToInt ?? 0)
+            let b = CGFloat(argbHex[(6..<8)]?.hexStringToInt ?? 0)
+            self.init(red: r, green: g, blue: b, alpha: a)
+        }else if argbHex.count == 6 {
+            let r = CGFloat(argbHex[(0..<2)]?.hexStringToInt ?? 0)
+            let g = CGFloat(argbHex[(2..<4)]?.hexStringToInt ?? 0)
+            let b = CGFloat(argbHex[(4..<6)]?.hexStringToInt ?? 0)
+            self.init(red: r, green: g, blue: b, alpha: 1.0)
+        }else {
+            return nil
+        }
+    }
+    
+    public static var randomColor: UIColor {
+        let r = CGFloat(arc4random() % 256)
+        let g = CGFloat(arc4random() % 256)
+        let b = CGFloat(arc4random() % 256)
+        return UIColor(r: r, g: g, b: b)
     }
 }
 
@@ -333,12 +321,89 @@ extension ColorData {
 
 import AppKit
 
-extension ColorData {
+extension NSColor {
     
-    public var nsColor: NSColor {
-        return NSColor(red: red, green: green, blue: blue, alpha: alpha)
+    var argbHexString: String? {
+        guard let rgbStr = rgbHexString else { return nil }
+        return "\(String(format: "%02X", Int(rgbStr.1 * 255.0)))\(rgbStr.0)"
+    }
+    
+    var rgbHexString: (String, CGFloat)? {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        getRed(&r, green: &g, blue: &b, alpha: &a)
+        var rStr = String(Int(255.0 * r), radix: 16),
+            gStr = String(Int(255.0 * g), radix: 16),
+            bStr = String(Int(255.0 * b), radix: 16)
+        rStr = (rStr.count == 1) ? "0\(rStr)" : rStr
+        gStr = (gStr.count == 1) ? "0\(gStr)" : gStr
+        bStr = (bStr.count == 1) ? "0\(bStr)" : bStr
+        let rgb = "\(rStr)\(gStr)\(bStr)"
+        return (rgb,a)
+    }
+    
+    public convenience init(r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat = 1) {
+        self.init(red: r / 255.0, green: g / 255.0, blue: b / 255.0, alpha: a)
+    }
+    
+    public convenience init?(hexString: String, alpha: CGFloat = 1.0) {
+        var fixedHexStr = hexString
+        if hexString.hasPrefix("#") {
+            guard let fixedHex = hexString[(1..<hexString.count-1)] else { return nil }
+            if fixedHex.count != 6 && fixedHex.count != 8 {
+                return nil
+            }
+            fixedHexStr = fixedHex
+        }
+        
+        do {
+            let regex = try NSRegularExpression(pattern: "[^a-fA-F|0-9]", options: [])
+            let match = regex.numberOfMatches(in: fixedHexStr, options: [.reportCompletion], range: NSRange(location: 0, length: fixedHexStr.count))
+            if match != 0 {
+                return nil
+            }
+            self.init(argbHexString: fixedHexStr)
+        } catch {
+            return nil
+        }
+    }
+    
+    public convenience init?(argbHexString: String) {
+        var argbHex = argbHexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
+        if argbHex.hasPrefix("#") {
+            guard let fixedHex = argbHex[(1..<argbHex.count-1)] else { return nil }
+            if fixedHex.count != 6 || fixedHex.count != 8 {
+                return nil
+            }
+            argbHex = fixedHex
+        }
+        
+        if argbHex.count == 8 {
+            let a = CGFloat(argbHex[(0..<2)]?.hexStringToInt ?? 0)
+            let r = CGFloat(argbHex[(2..<4)]?.hexStringToInt ?? 0)
+            let g = CGFloat(argbHex[(4..<6)]?.hexStringToInt ?? 0)
+            let b = CGFloat(argbHex[(6..<8)]?.hexStringToInt ?? 0)
+            self.init(red: r, green: g, blue: b, alpha: a)
+        }else if argbHex.count == 6 {
+            let r = CGFloat(argbHex[(0..<2)]?.hexStringToInt ?? 0)
+            let g = CGFloat(argbHex[(2..<4)]?.hexStringToInt ?? 0)
+            let b = CGFloat(argbHex[(4..<6)]?.hexStringToInt ?? 0)
+            self.init(red: r, green: g, blue: b, alpha: 1.0)
+        }else {
+            return nil
+        }
+    }
+    
+    public static var randomColor: NSColor {
+        let r = CGFloat(arc4random() % 256)
+        let g = CGFloat(arc4random() % 256)
+        let b = CGFloat(arc4random() % 256)
+        return NSColor(r: r, g: g, b: b)
     }
 }
+
 
 #endif
 

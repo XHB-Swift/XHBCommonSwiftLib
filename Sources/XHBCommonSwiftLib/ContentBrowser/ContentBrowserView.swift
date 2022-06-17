@@ -299,7 +299,7 @@ open class ContentBrowserView<P: ContentBrowserPageData>: UIView, UICollectionVi
         viewModel?.scroll(to: page - 1)
     }
     
-    public override func responds(value: Any?, from sender: UIResponder, event name: String) {
+    public override func responds(from sender: UIResponder, value: Any?, event name: String) {
         if name == .clickEmptyArea {
             delegate?.didClickEmptyArea(in: self)
         }
@@ -415,7 +415,7 @@ open class ContentBrowserViewImageCell<P: ContentBrowserPageData>: ContentBrowse
         guard let imgView = imageView else { return }
         let touchedPoint = sender.location(in: contentView)
         let clickEvent: String = !imgView.frame.contains(touchedPoint) ? .clickEmptyArea : .clickContentArea
-        next?.responds(value: nil, from: self, event: clickEvent)
+        next?.responds(from: self, value: nil, event: clickEvent)
     }
     
     @objc private func doubleTapAction(_ sender: UITapGestureRecognizer) {
@@ -572,7 +572,7 @@ open class ContentBrowserViewImageCell<P: ContentBrowserPageData>: ContentBrowse
             self?.contentView.backgroundColor = .clear
         }, completion: { [weak self] finished in
             guard let strongSelf = self else { return }
-            strongSelf.next?.responds(value: nil, from: strongSelf, event: .clickEmptyArea)
+            strongSelf.next?.responds(from: strongSelf, value: nil, event: .clickEmptyArea)
         })
     }
     

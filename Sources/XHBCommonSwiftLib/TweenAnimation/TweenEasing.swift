@@ -96,7 +96,7 @@ extension TweenEasing {
             var i = t / d
             if i == 0 { return b + c }
             let p = d * 0.3
-            var s: CGFloat = 0
+            var s: Double = 0
             let a = c
             if a < abs(c) {
                 s = p / 4
@@ -110,7 +110,7 @@ extension TweenEasing {
         public static let back = TweenEasing { t, b, c, d in
             if d == 0 { return 0 }
             let i = t / d
-            let s: CGFloat = 1.70158
+            let s: Double = 1.70158
             return c * pow(i, 2) * ((s + 1) * i - s) + b
         }
         
@@ -176,7 +176,7 @@ extension TweenEasing {
             var i = t / d
             if i == 1 { return b + c }
             let p = d * 0.3
-            var s: CGFloat = 0
+            var s: Double = 0
             let a = c
             if a < abs(c) {
                 s = p / 4
@@ -190,7 +190,7 @@ extension TweenEasing {
         public static let back = TweenEasing { t, b, c, d in
             if d == 0 { return 0 }
             let i = t / d - 1
-            let s: CGFloat = 1.70158
+            let s: Double = 1.70158
             return c * (pow(i, 2) * ((s + 1) * i + s) + 1) + b
         }
         
@@ -286,7 +286,7 @@ extension TweenEasing {
             var i = t / (d / 2)
             if i == 2 { return b + c }
             let p = d * 0.3 * 1.5
-            var s: CGFloat = 0
+            var s: Double = 0
             let a = c
             if a < abs(c) {
                 s = p / 4
@@ -304,7 +304,7 @@ extension TweenEasing {
         public static let back = TweenEasing { t, b, c, d in
             if d == 0 { return 0 }
             var i = t / (d / 2)
-            let s: CGFloat = 1.70158 * 1.525
+            let s: Double = 1.70158 * 1.525
             if i < 1 { return c / 2 * (pow(i, 2) * ((s + 1) * i - s) + b) }
             i -= 2
             return c / 2 * (pow(i, 2) * ((s + 1) * i + s) + 2) + b
