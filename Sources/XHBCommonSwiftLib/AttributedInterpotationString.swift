@@ -167,14 +167,14 @@ extension AttributedInterpotationString {
 }
 
 extension AttributedInterpotationString.StringInterpolation {
-    func appendInterpolation(_ string: String, _ styles: AttributedInterpotationString.Style...) {
+    public func appendInterpolation(_ string: String, _ styles: AttributedInterpotationString.Style...) {
         var attrs: [NSAttributedString.Key : Any] = [:]
         styles.forEach { attrs.merge($0.attributes, uniquingKeysWith: { $1 }) }
         let astr = NSAttributedString(string: string, attributes: attrs)
         attributedString.append(astr)
     }
     
-    func appendInterpolation(_ string: AttributedInterpotationString, _ styles: AttributedInterpotationString.Style...) {
+    public func appendInterpolation(_ string: AttributedInterpotationString, _ styles: AttributedInterpotationString.Style...) {
         var attrs: [NSAttributedString.Key : Any] = [:]
         styles.forEach { attrs.merge($0.attributes, uniquingKeysWith: { $1 }) }
         let mas = NSMutableAttributedString(attributedString: string.attributedString)
