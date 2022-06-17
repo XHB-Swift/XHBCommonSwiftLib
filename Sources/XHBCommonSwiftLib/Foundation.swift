@@ -497,16 +497,12 @@ extension Int {
     }
 }
 
-#if os(iOS)
-
 extension CGFloat {
     public enum Zero: DefaultValue {
         public typealias Value = CGFloat
         public static var defaultValue: CGFloat = 0
     }
 }
-
-#endif
 
 extension Float {
     public enum Zero: DefaultValue {
@@ -528,8 +524,6 @@ extension Default {
     public typealias IntZero = Default<Int.Zero>
     public typealias FloatZero = Default<Float.Zero>
     public typealias DoubleZero = Default<Double.Zero>
-    #if os(iOS)
     public typealias CGFloatZero = Default<CGFloat.Zero>
-    #endif
     public typealias EmptyString = Default<String.Empty>
 }
