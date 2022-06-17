@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "XHBCommonSwiftLib",
     platforms: [
-        .iOS(.v9),
+        .iOS(.v10),
         .macOS(.v10_15)
     ],
     products: [
