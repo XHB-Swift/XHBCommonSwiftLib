@@ -393,7 +393,7 @@ extension URLSession {
 //MARK: 属性包装器
 
 @propertyWrapper
-struct Clamped<T: Comparable> {
+public struct Clamped<T: Comparable> {
     
     private var value: T
     private var validRange: ClosedRange<T>
@@ -413,29 +413,29 @@ struct Clamped<T: Comparable> {
 }
 
 @propertyWrapper
-struct Trimmed {
+public struct Trimmed {
     
     private var value = ""
     
-    var wrappedValue: String {
+    public var wrappedValue: String {
         get { return value }
         set {
             value = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
         }
     }
     
-    init(_ value: String) {
+    public init(_ value: String) {
         self.value = value
     }
     
 }
 
 @propertyWrapper
-struct Path {
+public struct Path {
     
-    let root: String
+    public let root: String
     private var absolutePath = ""
-    var wrappedValue: String {
+    public var wrappedValue: String {
         get {
             return absolutePath
         }
@@ -444,7 +444,7 @@ struct Path {
         }
     }
     
-    init(root: String) {
+    public init(root: String) {
         self.root = root
     }
     
@@ -457,13 +457,16 @@ public protocol DefaultValue {
 }
 
 @propertyWrapper
-struct Default<T: DefaultValue> {
+public struct Default<T: DefaultValue> {
     
-    var wrappedValue: T.Value
+    public var wrappedValue: T.Value
+    public init(wrappedValue: T.Value) {
+        self.wrappedValue = wrappedValue
+    }
 }
 
 extension Default: Codable {
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         wrappedValue = (try? container.decode(T.Value.self)) ?? T.defaultValue
     }
