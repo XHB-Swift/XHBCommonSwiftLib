@@ -21,6 +21,11 @@ public class BezierPathBubbleTipsView: UIView {
     }
     public var cornerRadius: CGFloat = 8
     public var contentInsets: UIEdgeInsets = .zero
+    public var bubblePosition: CGPoint = .zero {
+        didSet {
+            bubbleView.origin = bubblePosition
+        }
+    }
     
     private weak var customView: UIView?
     private let bubbleView = UIView(frame: .zero)
