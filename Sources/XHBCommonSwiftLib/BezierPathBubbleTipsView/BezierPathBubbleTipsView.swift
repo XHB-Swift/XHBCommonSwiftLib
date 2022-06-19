@@ -208,7 +208,7 @@ public class BezierPathBubbleTipsView: UIView {
                               endAngle: .pi_2,
                               clockwise: true)
             bubblePath.addLine(to: CGPoint(x: arrowHeight, y: bubbleHeight))
-            bubblePath.addArc(withCenter: CGPoint(x: arrowHeight - cornerRadius, y: bubbleHeight - cornerRadius),
+            bubblePath.addArc(withCenter: CGPoint(x: arrowHeight + cornerRadius, y: bubbleHeight - cornerRadius),
                               radius: cornerRadius,
                               startAngle: .pi_2,
                               endAngle: .pi,
