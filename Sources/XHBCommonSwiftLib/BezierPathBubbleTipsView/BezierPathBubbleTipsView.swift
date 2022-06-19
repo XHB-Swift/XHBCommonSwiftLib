@@ -165,14 +165,21 @@ public class BezierPathBubbleTipsView: UIView {
                               endAngle: -.pi_2,
                               clockwise: true)
             bubblePath.addLine(to: CGPoint(x: bubbleWidth, y: 0))
-            bubblePath.addArc(withCenter: CGPoint(x: bubbleWidth - cornerRadius, y: bubbleHeight - arrowHeight - cornerRadius),
+            bubblePath.addArc(withCenter: CGPoint(x: bubbleWidth - cornerRadius, y: cornerRadius),
                               radius: cornerRadius,
                               startAngle: 0,
                               endAngle: .pi_2,
                               clockwise: true)
+            bubblePath.addLine(to: CGPoint(x: bubbleWidth, y: bubbleHeight))
+            bubblePath.addArc(withCenter: CGPoint(x: bubbleWidth - cornerRadius, y: bubbleHeight - arrowHeight - cornerRadius),
+                              radius: cornerRadius,
+                              startAngle: .pi_2,
+                              endAngle: .pi,
+                              clockwise: true)
             bubblePath.addLine(to: CGPoint(x: arrowX + arrowWidth, y: bubbleHeight - arrowHeight))
             bubblePath.addLine(to: CGPoint(x: arrowX + arrowWidth / 2, y: bubbleHeight))
             bubblePath.addLine(to: CGPoint(x: arrowX, y: bubbleHeight - arrowHeight))
+            bubblePath.addLine(to: CGPoint(x: 0, y: bubbleHeight - arrowHeight))
             bubblePath.addArc(withCenter: CGPoint(x: cornerRadius, y: bubbleHeight - arrowHeight - cornerRadius),
                               radius: cornerRadius,
                               startAngle: .pi_2,
@@ -189,11 +196,17 @@ public class BezierPathBubbleTipsView: UIView {
             bubblePath.addLine(to: CGPoint(x: bubbleWidth, y: 0))
             bubblePath.addArc(withCenter: CGPoint(x: bubbleWidth - cornerRadius, y: cornerRadius),
                               radius: cornerRadius,
+                              startAngle: -.pi_2,
+                              endAngle: 0,
+                              clockwise: true)
+            bubblePath.addLine(to: CGPoint(x: bubbleWidth, y: bubbleHeight))
+            bubblePath.addArc(withCenter: CGPoint(x: bubbleWidth - cornerRadius, y: bubbleHeight - cornerRadius),
+                              radius: cornerRadius,
                               startAngle: 0,
                               endAngle: .pi_2,
                               clockwise: true)
             bubblePath.addLine(to: CGPoint(x: arrowHeight, y: bubbleHeight))
-            bubblePath.addArc(withCenter: CGPoint(x: arrowHeight + cornerRadius, y: bubbleHeight - cornerRadius),
+            bubblePath.addArc(withCenter: CGPoint(x: arrowHeight - cornerRadius, y: bubbleHeight - cornerRadius),
                               radius: cornerRadius,
                               startAngle: .pi_2,
                               endAngle: .pi,
@@ -203,7 +216,7 @@ public class BezierPathBubbleTipsView: UIView {
             bubblePath.addLine(to: CGPoint(x: arrowX + arrowHeight, y: arrowY))
             bubblePath.addLine(to: CGPoint(x: arrowHeight, y: 0))
         case .right:
-            bubblePath.move(to: CGPoint(x: arrowHeight, y: 0))
+            bubblePath.move(to: CGPoint(x: 0, y: 0))
             bubblePath.addArc(withCenter: CGPoint(x: cornerRadius, y: cornerRadius),
                               radius: cornerRadius,
                               startAngle: -.pi,
