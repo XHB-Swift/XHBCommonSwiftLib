@@ -14,7 +14,7 @@ public class BezierPathBubbleTipsView: UIView {
     public var arrowPosition: ArrowPosition = .leading(offset: 5)
     public var arrowDirection: ArrowDirection = .up
     public var arrowSize = CGSize(width: 14, height: 8)
-    public var bubbleColor: UIColor = .black {
+    public var bubbleColor: UIColor? = .black {
         didSet {
             bubbleLayer.fillColor = bubbleColor.cgColor
         }
