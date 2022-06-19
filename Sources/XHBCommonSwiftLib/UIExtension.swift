@@ -298,12 +298,12 @@ extension UIColor {
             let r = CGFloat(argbHex[(2..<4)]?.hexStringToInt ?? 0)
             let g = CGFloat(argbHex[(4..<6)]?.hexStringToInt ?? 0)
             let b = CGFloat(argbHex[(6..<8)]?.hexStringToInt ?? 0)
-            self.init(red: r, green: g, blue: b, alpha: a)
+            self.init(r: r, g: g, b: b, a: a)
         }else if argbHex.count == 6 {
             let r = CGFloat(argbHex[(0..<2)]?.hexStringToInt ?? 0)
             let g = CGFloat(argbHex[(2..<4)]?.hexStringToInt ?? 0)
             let b = CGFloat(argbHex[(4..<6)]?.hexStringToInt ?? 0)
-            self.init(red: r, green: g, blue: b, alpha: 1.0)
+            self.init(r: r, g: g, b: b, a: 1.0)
         }else {
             return nil
         }
@@ -385,12 +385,12 @@ extension NSColor {
             let r = CGFloat(argbHex[(2..<4)]?.hexStringToInt ?? 0)
             let g = CGFloat(argbHex[(4..<6)]?.hexStringToInt ?? 0)
             let b = CGFloat(argbHex[(6..<8)]?.hexStringToInt ?? 0)
-            self.init(red: r, green: g, blue: b, alpha: a)
+            self.init(r: r, g: g, b: b, a: a)
         }else if argbHex.count == 6 {
             let r = CGFloat(argbHex[(0..<2)]?.hexStringToInt ?? 0)
             let g = CGFloat(argbHex[(2..<4)]?.hexStringToInt ?? 0)
             let b = CGFloat(argbHex[(4..<6)]?.hexStringToInt ?? 0)
-            self.init(red: r, green: g, blue: b, alpha: 1.0)
+            self.init(r: r, g: g, b: b, a: 1.0)
         }else {
             return nil
         }
