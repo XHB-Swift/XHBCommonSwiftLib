@@ -11,7 +11,7 @@ import UIKit
 
 public class BezierPathBubbleTipsView: UIView {
     
-    public var arrowPosition: ArrowPosition = .leading(offset: 5)
+    public var arrowPosition: ArrowPosition = .leading(offset: 8)
     public var arrowDirection: ArrowDirection = .up
     public var arrowSize = CGSize(width: 14, height: 8)
     public var bubbleColor: UIColor? = .black {
@@ -19,13 +19,9 @@ public class BezierPathBubbleTipsView: UIView {
             bubbleLayer.fillColor = bubbleColor?.cgColor
         }
     }
+    public var point: CGPoint = .zero
     public var cornerRadius: CGFloat = 8
     public var contentInsets: UIEdgeInsets = .zero
-    public var bubblePosition: CGPoint = .zero {
-        didSet {
-            bubbleView.origin = bubblePosition
-        }
-    }
     
     private weak var customView: UIView?
     private let bubbleView = UIView(frame: .zero)
@@ -129,6 +125,8 @@ public class BezierPathBubbleTipsView: UIView {
         let bubblePath = UIBezierPath()
         switch arrowDirection {
         case .up:
+            bubbleView.x = point.x - arrowSize.width / 2 - arrowPoint.x
+            bubbleView.y = point.y
             bubblePath.move(to: CGPoint(x: 0, y: arrowY + arrowHeight))
             bubblePath.addArc(withCenter: CGPoint(x: cornerRadius, y: cornerRadius + arrowHeight),
                               radius: cornerRadius,
@@ -158,6 +156,9 @@ public class BezierPathBubbleTipsView: UIView {
                               clockwise: true)
             bubblePath.addLine(to: CGPoint(x: 0, y: arrowHeight))
         case .down:
+            bubbleView.x = point.x - arrowSize.width / 2 - arrowPoint.x
+            bubbleView.y = point.y - bubbleHeight
+            bubbleView.bottom = point.y
             bubblePath.move(to: CGPoint(x: 0, y: 0))
             bubblePath.addArc(withCenter: CGPoint(x: cornerRadius, y: cornerRadius),
                               radius: cornerRadius,
@@ -187,6 +188,7 @@ public class BezierPathBubbleTipsView: UIView {
                               clockwise: true)
             bubblePath.addLine(to: CGPoint(x: 0, y: bubbleHeight - arrowHeight))
         case .left:
+            bubbleView.origin = point
             bubblePath.move(to: CGPoint(x: arrowHeight, y: 0))
             bubblePath.addArc(withCenter: CGPoint(x: cornerRadius + arrowHeight, y: cornerRadius),
                               radius: cornerRadius,
@@ -216,6 +218,8 @@ public class BezierPathBubbleTipsView: UIView {
             bubblePath.addLine(to: CGPoint(x: arrowX + arrowHeight, y: arrowY))
             bubblePath.addLine(to: CGPoint(x: arrowHeight, y: 0))
         case .right:
+            bubbleView.x = point.x - bubbleWidth
+            bubbleView.y = point.y
             bubblePath.move(to: CGPoint(x: 0, y: 0))
             bubblePath.addArc(withCenter: CGPoint(x: cornerRadius, y: cornerRadius),
                               radius: cornerRadius,
