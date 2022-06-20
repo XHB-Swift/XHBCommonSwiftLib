@@ -48,8 +48,16 @@ extension AttributedInterpotationString: ExpressibleByStringInterpolation {
         }
         
         public func appendLiteral(_ literal: String) {
+            #if os(iOS)
+            let attrs: [NSAttributedString.Key : Any] = [
+                .font : UIFont(name: "PingFangSC-Regular", size: 16) as Any,
+                .foregroundColor : UIColor.black as Any
+            ]
+            appendInterpolation(literal, attrs)
+            #else
             let astr = NSAttributedString(string: literal)
             self.attributedString.append(astr)
+            #endif
         }
         
         public func appendInterpolation(_ string: String, _ attributes: [NSAttributedString.Key : Any]) {
