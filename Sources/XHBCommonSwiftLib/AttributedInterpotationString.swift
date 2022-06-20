@@ -168,14 +168,28 @@ extension AttributedInterpotationString {
 
 extension AttributedInterpotationString.StringInterpolation {
     public func appendInterpolation(_ string: String, _ styles: AttributedInterpotationString.Style...) {
+        #if os(iOS)
+        var attrs: [NSAttributedString.Key : Any] = [
+            .font : UIFont(name: "PingFangSC-Regular", size: 16) as Any,
+            .foregroundColor : UIColor.black as Any
+        ]
+        #else
         var attrs: [NSAttributedString.Key : Any] = [:]
+        #endif
         styles.forEach { attrs.merge($0.attributes, uniquingKeysWith: { $1 }) }
         let astr = NSAttributedString(string: string, attributes: attrs)
         attributedString.append(astr)
     }
     
     public func appendInterpolation(_ string: AttributedInterpotationString, _ styles: AttributedInterpotationString.Style...) {
+        #if os(iOS)
+        var attrs: [NSAttributedString.Key : Any] = [
+            .font : UIFont(name: "PingFangSC-Regular", size: 16) as Any,
+            .foregroundColor : UIColor.black as Any
+        ]
+        #else
         var attrs: [NSAttributedString.Key : Any] = [:]
+        #endif
         styles.forEach { attrs.merge($0.attributes, uniquingKeysWith: { $1 }) }
         let mas = NSMutableAttributedString(attributedString: string.attributedString)
         let fullRange = NSRange(mas.string.startIndex..<mas.string.endIndex, in: mas.string)
