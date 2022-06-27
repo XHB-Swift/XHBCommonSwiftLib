@@ -1,126 +1,136 @@
 //
 //  Theme.swift
-//  CodeRecord-Swift
+//  
 //
-//  Created by xiehongbiao on 2021/9/8.
-//  Copyright © 2021 谢鸿标. All rights reserved.
+//  Created by 谢鸿标 on 2022/6/27.
 //
 
 import UIKit
+import XHBFoundationSwiftLib
 
-extension String {
+open class Theme: NSObject {
     
-    public static let dark = "dark"
-    public static let light = "light"
-}
-
-@objc public protocol ThemeUpdatable {
+    internal var theme = [String:Any]()
     
-    @objc func theme_effect(for style: String, theme: AnyObject?)
-}
-
-open class Theme {
-    
-    //表示该主题针对view的哪个属性
-    fileprivate var property: AnyKeyPath?
-    
-    fileprivate var style: ThemeStyle
-    
-    public init(style: ThemeStyle) {
-        self.style = style
+    public convenience init(style: String, value: Any) {
+        self.init()
+        theme[style] = value
     }
     
-    public init(property: AnyKeyPath, style: ThemeStyle) {
-        self.property = property
-        self.style = style
+    open func set(value: Any, for style: String) {
+        theme[style] = value
+    }
+    
+    open func toConcreteTheme(for style: String) -> Any? {
+        assert(false, "Subsclass must implement this method.")
+        return nil
     }
 }
 
-fileprivate class ThemeObject {
+open class ThemeInt: Theme {
     
-    fileprivate var viewId: String
-    fileprivate weak var view: ThemeUpdatable?
-    fileprivate var themeInfo = Dictionary<String, Theme>()
-    
-    public init(viewId: String) {
-        self.viewId = viewId
+    open override func toConcreteTheme(for style: String) -> Any? {
+        return theme[style] as? Int ?? 0
     }
-    
-    fileprivate func update(style: String) {
-        guard let theme = themeInfo[style] else { return }
-        view?.theme_effect(for: style, theme: theme)
-    }
-    
-    deinit {
-        themeInfo.removeAll()
+    open override func set(value: Any, for style: String) {
+        guard let v = value as? Int else { return }
+        theme[style] = v
     }
 }
 
-fileprivate class ThemeScene {
+open class ThemeBool: Theme {
     
-    fileprivate var sceneId: String
-    fileprivate var themeObjects = Dictionary<String, ThemeObject>()
-    
-    public init(sceneId: String) {
-        self.sceneId = sceneId
+    open override func toConcreteTheme(for style: String) -> Any? {
+        return theme[style] as? Bool ?? false
     }
-    
-    public func update(style: String) {
-        themeObjects.forEach { key, value in
-            value.update(style: style)
-        }
-    }
-    
-    deinit {
-        themeObjects.removeAll()
+    open override func set(value: Any, for style: String) {
+        guard let v = value as? Bool else { return }
+        theme[style] = v
     }
 }
 
-open class ThemeManager {
+open class ThemeText: Theme {
     
-    private init() {}
-    public static let shared = ThemeManager()
-    private var themeScenes = Dictionary<String, ThemeScene>()
+    open override func toConcreteTheme(for style: String) -> Any? {
+        return theme[style] as? String ?? ""
+    }
+    open override func set(value: Any, for style: String) {
+        guard let v = value as? String else { return }
+        theme[style] = v
+    }
+}
+
+open class ThemeFont: Theme {
     
-    open func set(theme: Theme, style: String, for view: ThemeUpdatable, in scene: Any) {
+    open override func toConcreteTheme(for style: String) -> Any? {
+        guard let font = theme[style] as? UIFont else { return nil }
+        return font
+    }
+    open override func set(value: Any, for style: String) {
+        guard let v = value as? UIFont else { return }
+        theme[style] = v
+    }
+}
+
+open class ThemeColor: Theme {
+    
+    open override func toConcreteTheme(for style: String) -> Any? {
+        guard let colorString = theme[style] as? String else { return nil }
+        return UIColor(argbHexString: colorString)
+    }
+    open override func set(value: Any, for style: String) {
+        guard let v = value as? UIColor else { return }
+        theme[style] = v
+    }
+}
+
+open class ThemeImage: Theme {
+    
+    open override func toConcreteTheme(for style: String) -> Any? {
+        guard let imagePath = theme[style] as? String else { return nil }
+        return UIImage(contentsOfFile: imagePath)
+    }
+    open override func set(value: Any, for style: String) {
+        guard let v = value as? String else { return }
+        theme[style] = v
+    }
+}
+
+open class ThemeCGFloat: Theme {
+    
+    open override func toConcreteTheme(for style: String) -> Any? {
+        return theme[style] as? CGFloat ?? 0.0
+    }
+    open override func set(value: Any, for style: String) {
+        guard let v = value as? CGFloat else { return }
+        theme[style] = v
+    }
+}
+
+open class ThemeRichText: Theme {
+    
+    open override func toConcreteTheme(for style: String) -> Any? {
+        guard let richText = theme[style] as? NSAttributedString else { return nil }
+        return richText
+    }
+    open override func set(value: Any, for style: String) {
+        guard let v = value as? NSAttributedString else { return }
+        theme[style] = v
+    }
+}
+
+open class ThemeState: Theme {
+    
+    internal var stateTheme: (Theme, ThemeInt)
+    
+    public init(stateTheme: (Theme, ThemeInt)) {
+        self.stateTheme = stateTheme
+    }
+    
+    open override func toConcreteTheme(for style: String) -> Any? {
+        guard let theme = stateTheme.0.toConcreteTheme(for: style),
+              let state = stateTheme.1.toConcreteTheme(for: style) else { return nil }
         
-        let viewId = "\(view)"
-        let sceneId = "\(scene)"
-        if let themeScene = themeScenes[sceneId] {
-            if let themeObject = themeScene.themeObjects[viewId] {
-                themeObject.themeInfo[style] = theme
-            }else {
-                let themeObject = ThemeObject(viewId: viewId)
-                themeObject.view = view
-                themeObject.themeInfo[style] = theme
-                themeScene.themeObjects[viewId] = themeObject
-            }
-        }else {
-            let themeScene = ThemeScene(sceneId: sceneId)
-            let themeObject = ThemeObject(viewId: viewId)
-            themeObject.view = view
-            themeObject.themeInfo[style] = theme
-            themeScene.themeObjects[viewId] = themeObject
-            themeScenes[sceneId] = themeScene
-        }
-    }
-    
-    open func clean(in scene: Any) {
-        _ = themeScenes.removeValue(forKey: "\(scene)")
-    }
-    
-    open func clean(for view: ThemeUpdatable, in scene: Any) {
-        guard let themeScene = themeScenes["\(scene)"] else { return }
-        _ = themeScene.themeObjects.removeValue(forKey: "\(view)")
-    }
-    
-    open func cleanAll() {
-        themeScenes.removeAll()
-    }
-    
-    open func switchTo(style: String) {
-        themeScenes.forEach { key, value in
-            value.update(style: style)
-        }
+        return (theme, state)
     }
 }

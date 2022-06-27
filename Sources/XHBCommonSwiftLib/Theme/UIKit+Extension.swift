@@ -17,239 +17,241 @@ extension NSObject {
     
     private static var ThemeUpdateKey: Void?
     
-    public var themeInfo: [String:ThemeStyle] {
+    open var themeInfo: [String:Theme] {
         set {
             objc_setAssociatedObject(self, &NSObject.ThemeUpdateKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
         get {
-            if let themeInfo = objc_getAssociatedObject(self, &NSObject.ThemeUpdateKey) as? [String:ThemeStyle] {
+            if let themeInfo = objc_getAssociatedObject(self, &NSObject.ThemeUpdateKey) as? [String:Theme] {
                 return themeInfo
             }
-            let emptyInfo = [String:ThemeStyle]()
+            let emptyInfo = [String:Theme]()
             objc_setAssociatedObject(self, &NSObject.ThemeUpdateKey, emptyInfo, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return emptyInfo
         }
     }
     
-    public func registerThemeUpdate() {
+    open func registerThemeUpdate() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(themeShouldUpdate(_:)),
                                                name: .ThemeDidUpdate,
                                                object: nil)
     }
     
-    public func unregisterThemeUpdate() {
+    open func unregisterThemeUpdate() {
         NotificationCenter.default.removeObserver(self)
     }
     
-    public func update(theme: ThemeStyle, key: String) {
+    @objc open func update(theme: Theme, key: String, style: String) {
         
     }
     
     @objc private func themeShouldUpdate(_ sender: Notification) {
+        guard let style = sender.object as? String else { return }
         for (key, theme) in themeInfo {
-            update(theme: theme, key: key)
+            update(theme: theme, key: key, style: style)
         }
     }
 }
 
-extension UIBarItem: ThemeUpdatable {
+extension UIView {
     
-    open func theme_set(image: ImageStyle, for style: String, in scene: Any) {
-        let theme = Theme(property: \UIBarItem.image, style: image)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    open func theme_set(title: String, for style: String, in scene: Any) {
-        let theme = Theme(property: \UIBarItem.title, style: title)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    open func theme_set(titleTextAttributes: RichTextStyle.RichTextAttributes,
-                        state: UIControl.State,
-                        for style: String,
-                        in scene: Any) {
-        
-        var stateStyle = StateStyle(selector: #selector(setTitleTextAttributes(_:for:)))
-        stateStyle.params = [state.rawValue : titleTextAttributes]
-        let theme = Theme(style: stateStyle)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    @objc open func theme_effect(for style: String, theme: AnyObject?) {
-        guard let theme0 = theme as? Theme else { return }
-        if let imageProperty = theme0.property as? ReferenceWritableKeyPath<UIBarItem, UIImage?> {
-            self[keyPath: imageProperty] = (theme0.style as? ImageStyle)?.toAttribute() as? UIImage
+    open var theme_backgroundColor: ThemeColor? {
+        set {
+            themeInfo["backgroundColor"] = newValue
         }
-        if let stateStyle = theme0.style as? StateStyle,
-           responds(to: stateStyle.selector),
-           stateStyle.selector == #selector(setTitleTextAttributes(_:for:)) {
-            stateStyle.params?.forEach({ key, value in
-                let state = UIControl.State(rawValue: key)
-                let attributes = value as? RichTextStyle.RichTextAttributes
-                setTitleTextAttributes(attributes, for: state)
-            })
+        get {
+            return themeInfo["backgroundColor"] as? ThemeColor
         }
     }
-}
-
-extension UINavigationBar {
     
-    open func theme_set(barStyle: UIBarStyle, for style: String, in scene: Any) {
-        let theme = Theme(property: \UINavigationBar.barStyle, style: barStyle)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    open func theme_set(barTintColor: ColorStyle, for style: String, in scene: Any) {
-        let theme = Theme(property: \UINavigationBar.barTintColor, style: barTintColor)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    open func theme_set(titleAttributes: RichTextStyle.RichTextAttributes, for style: String, in scene: Any) {
-        let theme = Theme(property: \UINavigationBar.titleTextAttributes, style: titleAttributes)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    @available(iOS 11.0, *)
-    open func theme_set(largeTitleAttributes: RichTextStyle.RichTextAttributes, for style: String, in scene: Any) {
-        let theme = Theme(property: \UINavigationBar.largeTitleTextAttributes, style: largeTitleAttributes)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    @objc open override func theme_effect(for style: String, theme: AnyObject?) {
-        super.theme_effect(for: style, theme: theme)
-        guard let theme0 = theme as? Theme else { return }
-        if let barStyleProperty = theme0.property as? ReferenceWritableKeyPath<UINavigationBar, UIBarStyle>,
-           let barStyle = theme0.style.toAttribute() as? UIBarStyle {
-            self[keyPath: barStyleProperty] = barStyle
+    open var theme_alpha: ThemeCGFloat? {
+        set {
+            themeInfo["alpha"] = newValue
         }
-        if let barTintColorProperty = theme0.property as? ReferenceWritableKeyPath<UINavigationBar, UIColor?> {
-            self[keyPath: barTintColorProperty] = theme0.style.toAttribute() as? UIColor
-        }
-        if let titleTextAttributesProperty = theme0.property as? ReferenceWritableKeyPath<UINavigationBar, Dictionary<NSAttributedString.Key,Any>?> {
-            self[keyPath: titleTextAttributesProperty] = theme0.style.toAttribute() as? Dictionary<NSAttributedString.Key,Any>
+        get {
+            return themeInfo["alpha"] as? ThemeCGFloat
         }
     }
-}
-
-extension UIView: ThemeUpdatable {
     
-    open func theme_set(backgroundColor: ColorStyle, for style: String, in scene: Any) {
-        let theme = Theme(property: \UIView.backgroundColor, style:backgroundColor)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
+    open var theme_tintColor: ThemeColor? {
+        set {
+            themeInfo["tintColor"] = newValue
+        }
+        get {
+            return themeInfo["tintColor"] as? ThemeColor
+        }
     }
     
-    open func theme_clean(in scene: Any) {
-        let manager = ThemeManager.shared
-        manager.clean(for: self, in: scene)
-        subviews.forEach { manager.clean(for: $0, in: scene) }
-    }
-    
-    @objc open func theme_effect(for style: String, theme: AnyObject?) {
-        guard let theme0 = theme as? Theme else { return }
-        if let colorProperty = theme0.property as? ReferenceWritableKeyPath<UIView, UIColor?> {
-            self[keyPath: colorProperty] = (theme0.style as? ColorStyle)?.toAttribute() as? UIColor
+    open override func update(theme: Theme, key: String, style: String) {
+        let t = theme.toConcreteTheme(for: style)
+        if let color = t as? UIColor {
+            
+            if key == "tintColor" {
+                self.tintColor = color
+            } else {
+                self.backgroundColor = color
+            }
+        } else if let alpha = t as? CGFloat {
+            
+            self.alpha = alpha
         }
     }
 }
 
 extension UILabel {
-
-    open func theme_set(textColor: ColorStyle, for style: String, in scene: Any) {
-        let theme = Theme(property: \UILabel.textColor, style: textColor)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
     
-    open func theme_set(shadowColor: ColorStyle, for style: String, in scene: Any) {
-        let theme = Theme(property: \UILabel.shadowColor, style: shadowColor)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    open func theme_set(font: FontStyle, for style: String, in scene: Any) {
-        let theme = Theme(property: \UILabel.font, style: font)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    open func theme_set(attributedText: RichTextStyle, for style: String, in scene: Any) {
-        let theme = Theme(property: \UILabel.font, style: attributedText)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    open func theme_set(highlightedTextColor: ColorStyle, for style: String, in scene: Any) {
-        let theme = Theme(property: \UILabel.highlightedTextColor, style: highlightedTextColor)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    open override func theme_effect(for style: String, theme: AnyObject?) {
-        super.theme_effect(for: style, theme: theme)
-        guard let theme0 = theme as? Theme else { return }
-        if let colorProperty = theme0.property as? ReferenceWritableKeyPath<UILabel, UIColor?> {
-            self[keyPath: colorProperty] = (theme0.style as? ColorStyle)?.toAttribute() as? UIColor
+    open var theme_text: ThemeText? {
+        set {
+            themeInfo["text"] = newValue
         }
-        if let fontProperty = theme0.property as? ReferenceWritableKeyPath<UILabel, UIFont?> {
-            self[keyPath: fontProperty] = (theme0.style as? FontStyle)?.toAttribute() as? UIFont
+        get {
+            return themeInfo["text"] as? ThemeText
+        }
+    }
+    
+    open var theme_font: ThemeFont? {
+        set {
+            themeInfo["font"] = newValue
+        }
+        get {
+            return themeInfo["font"] as? ThemeFont
+        }
+    }
+    
+    open var theme_richText: ThemeRichText? {
+        set {
+            themeInfo["richText"] = newValue
+        }
+        get {
+            return themeInfo["richText"] as? ThemeRichText
+        }
+    }
+    
+    open var theme_alignment: ThemeInt? {
+        set {
+            themeInfo["alignment"] = newValue
+        }
+        get {
+            return themeInfo["alignment"] as? ThemeInt
+        }
+    }
+    
+    open var theme_textColor: ThemeColor? {
+        set {
+            themeInfo["textColor"] = newValue
+        }
+        get {
+            return themeInfo["textColor"] as? ThemeColor
+        }
+    }
+    
+    open override func update(theme: Theme, key: String, style: String) {
+        let t = theme.toConcreteTheme(for: style)
+        if let text = t as? String {
+            self.text = text
+        } else if let richText = t as? NSAttributedString {
+            self.attributedText = richText
+        } else if let font = t as? UIFont {
+            self.font = font
+        } else if let i = t as? Int,
+                  let alignment = NSTextAlignment(rawValue: i) {
+            self.textAlignment = alignment
+        } else {
+            super.update(theme: theme, key: key, style: style)
+            if key == "textColor",
+               let textColor = t as? UIColor {
+                self.textColor = textColor
+            }
         }
     }
 }
 
 extension UIButton {
     
-    open func theme_set(titleColor: ColorStyle,
-                        state: UIControl.State,
-                        for style: String,
-                        in scene: Any) {
-        var stateStyle = StateStyle(selector: #selector(setTitleColor(_:for:)))
-        stateStyle.params = [state.rawValue : titleColor]
-        let theme = Theme(style: stateStyle)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    open func theme_set(title: String,
-                        state: UIControl.State,
-                        for style: String,
-                        in scene: Any) {
-        var stateStyle = StateStyle(selector: #selector(setTitle(_:for:)))
-        stateStyle.params = [state.rawValue : title]
-        let theme = Theme(style: stateStyle)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    open func theme_set(attributedTitle: RichTextStyle,
-                        state: UIControl.State,
-                        for style: String,
-                        in scene: Any) {
-        var stateStyle = StateStyle(selector: #selector(setAttributedTitle(_:for:)))
-        stateStyle.params = [state.rawValue : attributedTitle]
-        let theme = Theme(style: stateStyle)
-        ThemeManager.shared.set(theme: theme, style: style, for: self, in: scene)
-    }
-    
-    open override func theme_effect(for style: String, theme: AnyObject?) {
-        super.theme_effect(for: style, theme: theme)
-        guard let theme0 = theme as? Theme else { return }
-        
-        if let stateStyle = theme0.style as? StateStyle,
-           responds(to: stateStyle.selector) {
-            let params = stateStyle.params
-            let selector = stateStyle.selector
-            if selector == #selector(setTitle(_:for:)) {
-                params?.forEach { setTitle($1 as? String, for: UIControl.State(rawValue: $0)) }
-            }
-            if selector == #selector(setTitleColor(_:for:)) {
-                params?.forEach {
-                    let colorStyle = $1 as? ColorStyle
-                    let color = colorStyle?.toAttribute() as? UIColor
-                    setTitleColor(color, for: UIControl.State(rawValue: $0))
-                }
-            }
-            if selector == #selector(setAttributedTitle(_:for:)) {
-                params?.forEach {
-                    let richTextStyle = $1 as? RichTextStyle
-                    let attributedText = richTextStyle?.toAttribute() as? NSAttributedString
-                    setAttributedTitle(attributedText, for: UIControl.State(rawValue: $0))
-                }
-            }
+    open var theme_titleState: ThemeState? {
+        set {
+            themeInfo["setTitleForState"] = newValue
         }
-        
+        get {
+            return themeInfo["setTitleForState"] as? ThemeState
+        }
     }
+    
+    open var theme_imageState: ThemeState? {
+        set {
+            themeInfo["setImageForState"] = newValue
+        }
+        get {
+            return themeInfo["setImageForState"] as? ThemeState
+        }
+    }
+    
+    open var theme_richTextState: ThemeState? {
+        set {
+            themeInfo["setAttributedTextForState"] = newValue
+        }
+        get {
+            return themeInfo["setAttributedTextForState"] as? ThemeState
+        }
+    }
+    
+    open var theme_backgroundImageState: ThemeState? {
+        set {
+            themeInfo["setBackgroundImageForState"] = newValue
+        }
+        get {
+            return themeInfo["setBackgroundImageForState"] as? ThemeState
+        }
+    }
+    
+    open override func update(theme: Theme, key: String, style: String) {
+        super.update(theme: theme, key: key, style: style)
+        let t = theme.toConcreteTheme(for: style)
+        guard let result = t as? (Any, Int) else { return }
+        let state = UIControl.State(rawValue: UInt(result.1))
+        if key == "setTitleForState",
+           let text = result.0 as? String {
+            self.setTitle(text, for: state)
+        } else if key == "setImageForState",
+                  let image = result.0 as? UIImage {
+            self.setImage(image, for: state)
+        } else if key == "setAttributedTextState",
+                  let richText = result.0 as? NSAttributedString {
+            self.setAttributedTitle(richText, for: state)
+        } else if key == "setBackgroundImageForState",
+                  let image = result.0 as? UIImage {
+            self.setBackgroundImage(image, for: state)
+        }
+    }
+}
+
+extension UIImageView {
+    
+    open var theme_image: ThemeImage? {
+        set {
+            themeInfo["image"] = newValue
+        }
+        get {
+            return themeInfo["image"] as? ThemeImage
+        }
+    }
+    
+    open override func update(theme: Theme, key: String, style: String) {
+        super.update(theme: theme, key: key, style: style)
+        let t = theme.toConcreteTheme(for: style)
+        if let img = t as? UIImage {
+            self.image = img
+        }
+    }
+    
+}
+
+extension UIBarItem {
+    
+}
+
+extension UINavigationBar {
+    
+    
 }
