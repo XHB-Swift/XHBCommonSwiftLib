@@ -6,8 +6,6 @@
 //  Copyright © 2021 谢鸿标. All rights reserved.
 //
 
-#if os(iOS)
-
 import UIKit
 
 public enum TransitionDirection {
@@ -179,5 +177,3 @@ open class CustomModalDirectionTransitioningConfiguration: CustomModalTransition
     }
     
 }
-
-#endif

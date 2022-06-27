@@ -6,8 +6,6 @@
 //  Copyright © 2022 谢鸿标. All rights reserved.
 //
 
-#if os(iOS)
-
 import UIKit
 
 open class LineGradientProgressView: GradientProgressView {
@@ -34,5 +32,3 @@ open class LineGradientProgressView: GradientProgressView {
     }
     
 }
-
-#endif

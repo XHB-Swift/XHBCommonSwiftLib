@@ -6,8 +6,6 @@
 //  Copyright © 2022 谢鸿标. All rights reserved.
 //
 
-#if os(iOS)
-
 import UIKit
 
 public protocol ColorType {
@@ -92,5 +90,3 @@ open class GradientProgressView: UIView {
     }
     
 }
-
-#endif

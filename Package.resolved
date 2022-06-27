@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "xhbfoundationswiftlib",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:XHB-Swift/XHBFoundationSwiftLib.git",
+      "state" : {
+        "revision" : "95bdd4b754a030964a26fd79e0b6edcc0d9657d8",
+        "version" : "0.0.1"
+      }
+    }
+  ],
+  "version" : 2
+}
