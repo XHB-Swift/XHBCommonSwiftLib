@@ -64,6 +64,7 @@ extension NotificationCenter {
     open func remove(themeObserver: NSObject, name: Notification.Name? = nil) {
         guard themeObservers.contains(themeObserver) else { return }
         removeObserver(themeObserver, name: name, object: nil)
+        themeObservers.remove(themeObserver)
     }
     
     open func removeAllThemeObservers() {
