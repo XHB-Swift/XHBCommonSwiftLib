@@ -37,6 +37,43 @@ fileprivate typealias imp_setScrollViewIndicatorStyle =
 fileprivate typealias imp_setActivityViewIndicatorStyle =
 @convention(c) (NSObject, Selector, UIActivityIndicatorView.Style) -> Void
 
+extension NotificationCenter {
+    
+    private static var ThemeObserverKey: Void?
+    
+    private var themeObservers: Set<NSObject> {
+        set {
+            objc_setAssociatedObject(self, &Self.ThemeObserverKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+        get {
+            if let observers = objc_getAssociatedObject(self, &Self.ThemeObserverKey) as? Set<NSObject> {
+                return observers
+            }
+            let emptyObservers = Set<NSObject>()
+            objc_setAssociatedObject(self, &Self.ThemeObserverKey, emptyObservers, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return emptyObservers
+        }
+    }
+    
+    open func add(themeObserver: NSObject, selector: Selector, name: Notification.Name) {
+        guard !themeObservers.contains(themeObserver) else { return }
+        addObserver(themeObserver, selector: selector, name: name, object: nil)
+        themeObservers.insert(themeObserver)
+    }
+    
+    open func remove(themeObserver: NSObject, name: Notification.Name? = nil) {
+        guard themeObservers.contains(themeObserver) else { return }
+        removeObserver(themeObserver, name: name, object: nil)
+    }
+    
+    open func removeAllThemeObservers() {
+        if themeObservers.isEmpty { return }
+        themeObservers.forEach { themeObserver in
+            removeObserver(themeObserver)
+        }
+    }
+}
+
 extension NSObject {
     
     private static var ThemeUpdateKey: Void?
@@ -50,7 +87,9 @@ extension NSObject {
             if let themeInfo = objc_getAssociatedObject(self, &NSObject.ThemeUpdateKey) as? [String:Set<Theme>] {
                 return themeInfo
             }
-            registerThemeUpdate()
+            NotificationCenter.default.add(themeObserver: self,
+                                           selector: #selector(themeShouldUpdate(_:)),
+                                           name: .ThemeDidUpdate)
             let emptyInfo = [String:Set<Theme>]()
             objc_setAssociatedObject(self, &NSObject.ThemeUpdateKey, emptyInfo, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return emptyInfo
@@ -92,17 +131,6 @@ extension NSObject {
             return nil
         }
         return themes.filter { $0.type == currentThemeType }.first
-    }
-    
-    open func registerThemeUpdate() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(themeShouldUpdate(_:)),
-                                               name: .ThemeDidUpdate,
-                                               object: nil)
-    }
-    
-    open func unregisterThemeUpdate() {
-        NotificationCenter.default.removeObserver(self, name: .ThemeDidUpdate, object: nil)
     }
     
     open func update(theme: Theme?, key: String) {
