@@ -71,6 +71,7 @@ extension NotificationCenter {
         themeObservers.forEach { themeObserver in
             removeObserver(themeObserver)
         }
+        themeObservers.removeAll()
     }
 }
 
