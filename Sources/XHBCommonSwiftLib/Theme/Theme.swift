@@ -8,129 +8,143 @@
 import UIKit
 import XHBFoundationSwiftLib
 
-open class Theme: NSObject {
+open class Theme: Hashable {
     
-    internal var theme = [String:Any]()
+    open var type = ""
+    internal var theme: Any
     
-    public convenience init(style: String, value: Any) {
-        self.init()
-        theme[style] = value
+    public init(value: Any, type: String = "") {
+        theme = value
+        self.type = type
     }
     
-    open func set(value: Any, for style: String) {
-        theme[style] = value
-    }
-    
-    open func toConcreteTheme(for style: String) -> Any? {
+    open func toConcreteTheme() -> Any? {
         assert(false, "Subsclass must implement this method.")
-        return nil
+        return theme
+    }
+    
+    public static func == (lhs: Theme, rhs: Theme) -> Bool {
+        return lhs.type == rhs.type
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.type)
     }
 }
 
-open class ThemeInt: Theme {
+extension Theme: CustomDebugStringConvertible {
     
-    open override func toConcreteTheme(for style: String) -> Any? {
-        return theme[style] as? Int ?? 0
-    }
-    open override func set(value: Any, for style: String) {
-        guard let v = value as? Int else { return }
-        theme[style] = v
+    public var debugDescription: String {
+        return "type = \(type), theme = \(theme)"
     }
 }
 
-open class ThemeBool: Theme {
+public final class ThemeInt: Theme {
     
-    open override func toConcreteTheme(for style: String) -> Any? {
-        return theme[style] as? Bool ?? false
-    }
-    open override func set(value: Any, for style: String) {
-        guard let v = value as? Bool else { return }
-        theme[style] = v
+    public override func toConcreteTheme() -> Any? {
+        return theme as? Int ?? 0
     }
 }
 
-open class ThemeText: Theme {
+public final class ThemeBool: Theme {
     
-    open override func toConcreteTheme(for style: String) -> Any? {
-        return theme[style] as? String ?? ""
-    }
-    open override func set(value: Any, for style: String) {
-        guard let v = value as? String else { return }
-        theme[style] = v
+    public override func toConcreteTheme() -> Any? {
+        return theme as? Bool ?? false
     }
 }
 
-open class ThemeFont: Theme {
+public final class ThemeText: Theme {
     
-    open override func toConcreteTheme(for style: String) -> Any? {
-        guard let font = theme[style] as? UIFont else { return nil }
+    public override func toConcreteTheme() -> Any? {
+        return theme as? String ?? ""
+    }
+}
+
+public final class ThemeFont: Theme {
+    
+    public override func toConcreteTheme() -> Any? {
+        guard let font = theme as? UIFont else { return nil }
         return font
     }
-    open override func set(value: Any, for style: String) {
-        guard let v = value as? UIFont else { return }
-        theme[style] = v
+}
+
+public final class ThemeColor: Theme {
+    
+    public var isCGColor = false
+    
+    public override func toConcreteTheme() -> Any? {
+        guard let colorString = theme as? String else { return nil }
+        let color = UIColor(argbHexString: colorString)
+        return isCGColor ? color?.cgColor : color
     }
 }
 
-open class ThemeColor: Theme {
+public final class ThemeImage: Theme {
     
-    open override func toConcreteTheme(for style: String) -> Any? {
-        guard let colorString = theme[style] as? String else { return nil }
-        return UIColor(argbHexString: colorString)
-    }
-    open override func set(value: Any, for style: String) {
-        guard let v = value as? UIColor else { return }
-        theme[style] = v
-    }
-}
-
-open class ThemeImage: Theme {
-    
-    open override func toConcreteTheme(for style: String) -> Any? {
-        guard let imagePath = theme[style] as? String else { return nil }
+    public override func toConcreteTheme() -> Any? {
+        guard let imagePath = theme as? String else { return nil }
         return UIImage(contentsOfFile: imagePath)
     }
-    open override func set(value: Any, for style: String) {
-        guard let v = value as? String else { return }
-        theme[style] = v
+}
+
+public final class ThemeCGFloat: Theme {
+    
+    public override func toConcreteTheme() -> Any? {
+        return theme as? CGFloat ?? 0.0
     }
 }
 
-open class ThemeCGFloat: Theme {
+public final class ThemeRichText: Theme {
     
-    open override func toConcreteTheme(for style: String) -> Any? {
-        return theme[style] as? CGFloat ?? 0.0
-    }
-    open override func set(value: Any, for style: String) {
-        guard let v = value as? CGFloat else { return }
-        theme[style] = v
-    }
-}
-
-open class ThemeRichText: Theme {
-    
-    open override func toConcreteTheme(for style: String) -> Any? {
-        guard let richText = theme[style] as? NSAttributedString else { return nil }
+    public override func toConcreteTheme() -> Any? {
+        guard let richText = theme as? NSAttributedString else { return nil }
         return richText
     }
-    open override func set(value: Any, for style: String) {
-        guard let v = value as? NSAttributedString else { return }
-        theme[style] = v
+}
+
+public final class ThemeState: Theme {
+    
+    public init(theme: Theme, for state: UInt) {
+        super.init(value: [state : theme])
+        set(theme: theme, for: state)
+    }
+    
+    public func set(theme: Theme, for state: UInt) {
+        guard var stateTheme = self.theme as? [UInt : Theme] else { return }
+        stateTheme[state] = theme
+    }
+    
+    public override func toConcreteTheme() -> Any? {
+        return theme as? [UInt : Theme]
     }
 }
 
-open class ThemeState: Theme {
+public final class ThemeBlurEffect: Theme {
     
-    internal var stateTheme: (Theme, ThemeInt)
-    
-    public init(stateTheme: (Theme, ThemeInt)) {
-        self.stateTheme = stateTheme
+    public override func toConcreteTheme() -> Any? {
+        return theme as? UIBlurEffect
     }
+}
+
+public final class ThemeVisualEffect: Theme {
     
-    open override func toConcreteTheme(for style: String) -> Any? {
-        guard let theme = stateTheme.0.toConcreteTheme(for: style),
-              let state = stateTheme.1.toConcreteTheme(for: style) else { return nil }
-        
-        return (theme, state)
+    public override func toConcreteTheme() -> Any? {
+        return theme as? UIVisualEffect
+    }
+}
+
+@available(iOS 13.0, *)
+public final class ThemeTabBarAppearance: Theme {
+    
+    public override func toConcreteTheme() -> Any? {
+        return theme as? UITabBarAppearance
+    }
+}
+
+@available(iOS 13.0, *)
+public final class ThemeNavigationBarAppearance: Theme {
+    
+    public override func toConcreteTheme() -> Any? {
+        return theme as? UINavigationBarAppearance
     }
 }
