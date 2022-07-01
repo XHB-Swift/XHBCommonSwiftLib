@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "git@github.com:XHB-Swift/XHBFoundationSwiftLib.git",
       "state" : {
-        "revision" : "068512e503670bba29f16d76f4d8bbabe1e7b11e",
-        "version" : "0.0.2"
+        "revision" : "aefd955c00e15bc2d4ac9082a8251ec016389bde",
+        "version" : "0.0.4"
       }
     }
   ],
