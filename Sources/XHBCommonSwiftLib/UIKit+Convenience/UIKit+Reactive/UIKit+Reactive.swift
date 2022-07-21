@@ -8,98 +8,130 @@
 import UIKit
 import XHBFoundationSwiftLib
 
-public typealias UIControlEventsAction<Observer: UIControl> = SelectorObserver<Observer>.Action
-public typealias UIBarButtonItemAction = SelectorObserver<UIBarButtonItem>.Action
-public typealias UIGestureRecognizerAction<Observer: UIGestureRecognizer> = SelectorObserver<Observer>.Action
-
-fileprivate final class UIControlObserver<Observer: UIControl> : SelectorObserver<Observer> {
-    
-    init(_ control: UIControl, _ events: UIControl.Event, _ action: @escaping UIControlEventsAction<Observer>) {
-        super.init(control, action)
-        control.addTarget(self, action: selector, for: events)
-    }
-}
-
-fileprivate final class UIBarButtonItemObserver: SelectorObserver<UIBarButtonItem> {
-    
-    init(_ barButtonItem: UIBarButtonItem, _ action: @escaping UIBarButtonItemAction) {
-        super.init(barButtonItem, action)
-        barButtonItem.target = self
-        barButtonItem.action = self.selector
-    }
-}
-
-fileprivate final class UIGestureRecognizerObserver<Observer: UIGestureRecognizer> : SelectorObserver<Observer> {
-    
-    init(_ gestureRecognizer: Observer, _ action: @escaping UIGestureRecognizerAction<Observer>) {
-        super.init(gestureRecognizer, action)
-        gestureRecognizer.addTarget(self, action: self.selector)
-    }
-}
-
-extension AnyObservable {
-    
-    open func add<Observer: UIControl>(control: Observer,
-                                       events: UIControl.Event,
-                                       action: @escaping UIControlEventsAction<Observer>) {
-      let newOne = UIControlObserver(control, events, action)
-      add(observer: newOne)
-    }
-    
-    open func add(barButtonItem: UIBarButtonItem,
-                  action: @escaping UIBarButtonItemAction) {
-        let newOne = UIBarButtonItemObserver(barButtonItem, action)
-        add(observer: newOne)
-    }
-    
-    open func add<Observer: UIGestureRecognizer>(gesture: Observer,
-                                                 action: @escaping UIGestureRecognizerAction<Observer>) {
-        let newOne = UIGestureRecognizerObserver(gesture, action)
-        add(observer: newOne)
-    }
-}
 
 extension UIControl {
     
-    @discardableResult
-    open class func subscribe<Control: UIControl>(control: Control,
-                                                  events: UIControl.Event,
-                                                  action: @escaping UIControlEventsAction<Control>) -> AnyObservable {
-        let observable = control.anyObservable
-        observable.add(control: control, events: events, action: action)
-        return observable
+    public struct Action<Output: UIControl>: Observable {
+        
+        public typealias Output = Output
+        public typealias Failure = Never
+        
+        public let output: Output
+        public let events: Output.Event
+        private let _signalConduit: _UIControlSignalConduit<Output>
+        
+        public init(output: Output, events: Output.Event) {
+            self.output = output
+            self.events = events
+            self._signalConduit = .init(source: output, events: events)
+        }
+        
+        public func subscribe<Ob>(_ observer: Ob) where Ob : Observer, Failure == Ob.Failure, Output == Ob.Input {
+            _signalConduit.attach(observer: observer)
+        }
     }
+}
+
+extension UIControl.Action {
     
-    @discardableResult
-    open class func subscribe<Control: UIControl, T>(control: Control,
-                                                     value: T,
-                                                     action: @escaping UIControlEventsAction<Control>) -> ValueObservable<T> {
-        let observable = control.specifiedValueObservable(value: value, queue: .main)
-        observable.add(control: control, events: [.valueChanged, .allEditingEvents], action: action)
-        return observable
+    fileprivate final class _UIControlSignalConduit<Source: UIControl>: SelectorSignalConduit<Source, Source, Never> {
+        
+        override func cancel() {
+            source?.removeTarget(self, action: self.selector, for: self.events)
+        }
+        
+        let events: Source.Event
+        
+        init(source: Source, events: Source.Event) {
+            self.events = events
+            super.init(source: source)
+            source.addTarget(self, action: self.selector, for: events)
+        }
     }
 }
 
 extension UIBarButtonItem {
     
-    @discardableResult
-    open func subscribe(action: @escaping UIBarButtonItemAction) -> AnyObservable {
-        let observable = anyObservable
-        observable.add(barButtonItem: self, action: action)
-        return observable
+    public func observation() -> UIBarButtonItem.Observation {
+        return .init(output: self)
+    }
+    
+    public struct Observation: Observable {
+        
+        public typealias Output = UIBarButtonItem
+        public typealias Failure = Never
+        
+        public let output: Output
+        private let _signalConduit: _UIBarButtonItemSignalConduit
+        
+        public init(output: Output) {
+            self.output = output
+            self._signalConduit = .init(source: output)
+        }
+        
+        public func subscribe<Ob>(_ observer: Ob) where Ob : Observer, Never == Ob.Failure, UIBarButtonItem == Ob.Input {
+            _signalConduit.attach(observer: observer)
+        }
+    }
+}
+
+extension UIBarButtonItem.Observation {
+    
+    fileprivate final class _UIBarButtonItemSignalConduit: SelectorSignalConduit<UIBarButtonItem, UIBarButtonItem, Never> {
+        
+        override func cancel() {
+            source?.target = nil
+            source?.action = nil
+            super.cancel()
+        }
+        
+        override init(source: UIBarButtonItem?) {
+            super.init(source: source)
+            source?.target = self
+            source?.action = self.selector
+        }
     }
 }
 
 extension UIGestureRecognizer {
     
-    private static var UIGestureRecognizerActionKey: Void?
+    public func observation<G: UIGestureRecognizer>(for gesture: G) -> G.Observation<G> {
+        return .init(output: gesture)
+    }
     
-    @discardableResult
-    open class func subscribe<Gesture: UIGestureRecognizer>(gesture: Gesture,
-                                                            action: @escaping UIGestureRecognizerAction<Gesture>) -> AnyObservable {
-        let observable = gesture.anyObservable
-        observable.add(gesture: gesture, action: action)
-        return observable
+    public struct Observation<Output: UIGestureRecognizer>: Observable {
+        
+        public typealias Output = Output
+        public typealias Failure = Never
+        
+        public let output: Output
+        private let _signalConduit: _UIGestureRecognizerSignalConduit<Output>
+        
+        public init(output: Output) {
+            self.output = output
+            self._signalConduit = .init(source: output)
+        }
+        
+        public func subscribe<Ob>(_ observer: Ob) where Ob : Observer, Never == Ob.Failure, Output == Ob.Input {
+            _signalConduit.attach(observer: observer)
+        }
     }
 }
+
+extension UIGestureRecognizer.Observation {
+    
+    fileprivate final class _UIGestureRecognizerSignalConduit<Output: UIGestureRecognizer>: SelectorSignalConduit<Output, Output, Never> {
+        
+        override func cancel() {
+            source?.removeTarget(self, action: self.selector)
+            super.cancel()
+        }
+        
+        override init(source: Output?) {
+            super.init(source: source)
+            source?.addTarget(self, action: self.selector)
+        }
+    }
+}
+
 

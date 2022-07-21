@@ -10,13 +10,13 @@ import XHBFoundationSwiftLib
 
 extension UITextField {
     
-    @discardableResult
-    open func subscribeText(action: @escaping UIControlEventsAction<UITextField>) -> ValueObservable<String?> {
-        return UIControl.subscribe(control: self, value: self.text, action: action)
+    open var textObservation: AnyObservable<String?, Never> {
+        return .init(UITextField.Action<UITextField>(output: self, events: [.valueChanged, .allEditingEvents])
+            .map { $0.text })
     }
     
-    @discardableResult
-    open func subscribeAttributedText(action: @escaping UIControlEventsAction<UITextField>) -> ValueObservable<NSAttributedString?> {
-        return UIControl.subscribe(control: self, value: self.attributedText, action: action)
+    open var attributedTextObservation: AnyObservable<NSAttributedString?, Never> {
+        return .init(UITextField.Action<UITextField>(output: self, events: [.valueChanged, .allEditingEvents])
+            .map { $0.attributedText })
     }
 }

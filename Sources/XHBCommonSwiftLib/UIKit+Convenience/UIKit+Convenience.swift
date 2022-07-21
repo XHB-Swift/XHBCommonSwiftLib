@@ -262,7 +262,7 @@ extension UIColor {
     public convenience init?(hexString: String, alpha: CGFloat = 1.0) {
         var fixedHexStr = hexString
         if hexString.hasPrefix("#") {
-            guard let fixedHex = hexString[(1..<hexString.count-1)] else { return nil }
+            guard let fixedHex = hexString[(1..<hexString.count)] else { return nil }
             if fixedHex.count != 6 && fixedHex.count != 8 {
                 return nil
             }
@@ -284,7 +284,7 @@ extension UIColor {
     public convenience init?(argbHexString: String) {
         var argbHex = argbHexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
         if argbHex.hasPrefix("#") {
-            guard let fixedHex = argbHex[(1..<argbHex.count-1)] else { return nil }
+            guard let fixedHex = argbHex[(1..<argbHex.count)] else { return nil }
             if fixedHex.count != 6 || fixedHex.count != 8 {
                 return nil
             }

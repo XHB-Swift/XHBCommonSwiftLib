@@ -10,8 +10,7 @@ import XHBFoundationSwiftLib
 
 extension UIStepper {
     
-    @discardableResult
-    open func subscribeValue(action: @escaping UIControlEventsAction<UIStepper>) -> ValueObservable<Double> {
-        return UIControl.subscribe(control: self, value: self.value, action: action)
+    open var observation: AnyObservable<Double, Never> {
+        return .init(UIStepper.Action<UIStepper>(output: self, events: .valueChanged).map { $0.value })
     }
 }

@@ -10,17 +10,16 @@ import XHBFoundationSwiftLib
 
 extension UIActivityIndicatorView {
     
-    @discardableResult
-    open func subscribedAnimating(action: @escaping ObserverClosure<UIActivityIndicatorView, Bool>) -> ValueObservable<Bool> {
-        let observable = specifiedValueObservable(value: isAnimating, queue: .main)
-        observable.add(observer: self) { activityIndicator, animating in
-            if animating {
-                activityIndicator.startAnimating()
+    open func subscribeAnimating(before: ((Bool) -> Void)? = nil,
+                                 after: ((Bool) -> Void)? = nil) -> NSObjectValueObservation<Bool> {
+        return subscribe(for: isAnimating, action: { [weak self] in
+            before?($0)
+            if $0 {
+                self?.startAnimating()
             } else {
-                activityIndicator.stopAnimating()
+                self?.stopAnimating()
             }
-            action(activityIndicator, animating)
-        }
-        return observable
+            after?($0)
+        })
     }
 }

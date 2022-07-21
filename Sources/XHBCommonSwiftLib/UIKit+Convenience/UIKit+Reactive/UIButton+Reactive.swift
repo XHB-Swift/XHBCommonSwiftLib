@@ -10,56 +10,26 @@ import XHBFoundationSwiftLib
 
 extension UIButton {
     
-    @discardableResult
-    open func touchupInside(action: @escaping UIControlEventsAction<UIButton>) -> AnyObservable {
-        return UIControl.subscribe(control: self, events: .touchUpInside, action: action)
+    open var touchupInside: AnyObservable<UIButton, Never> {
+        return .init(UIButton.Action<UIButton>(output: self, events: .touchUpInside))
     }
 }
 
 extension UIButton {
     
-    private static var UIButtonTitleKey: Void?
-    private static var UIButtonImageKey: Void?
-    private static var UIButtonBackgroundImageKey: Void?
-    private static var UIButtonAttributedTitleKey: Void?
-    
-    @discardableResult
-    open func subscribeTitle(for state: UIControl.State) -> ValueObservable<String?> {
-        let tmp: String? = nil
-        let observable = specifiedOptinalValueObservable(value: tmp, queue: .main)
-        observable.add(observer: self) { button, changedTitle in
-            button.setTitle(changedTitle, for: state)
-        }
-        return observable
+    open func subscribeTitle(for state: UIControl.State) -> NSObjectNilValueObservation<String> {
+        return subscribe(for: { [weak self] in self?.setTitle($0, for: state) })
     }
     
-    @discardableResult
-    open func subscribeImage(for state: UIControl.State) -> ValueObservable<UIImage?> {
-        let tmp: UIImage? = nil
-        let observable = specifiedOptinalValueObservable(value: tmp, queue: .main)
-        observable.add(observer: self) { button, changedImage in
-            button.setImage(changedImage, for: state)
-        }
-        return observable
+    open func subscribeImage(for state: UIControl.State) -> NSObjectNilValueObservation<UIImage> {
+        return subscribe(for: { [weak self] in self?.setImage($0, for: state) })
     }
     
-    @discardableResult
-    open func subscribeBackgroundImage(for state: UIControl.State) -> ValueObservable<UIImage?> {
-        let tmp: UIImage? = nil
-        let observable = specifiedOptinalValueObservable(value: tmp, queue: .main)
-        observable.add(observer: self) { button, changedImage in
-            button.setBackgroundImage(changedImage, for: state)
-        }
-        return observable
+    open func subscribeBackgroundImage(for state: UIControl.State) -> NSObjectNilValueObservation<UIImage> {
+        return subscribe(for: { [weak self] in self?.setBackgroundImage($0, for: state) })
     }
     
-    @discardableResult
-    open func subscribeAttributedTitle(for state: UIControl.State) -> ValueObservable<NSAttributedString?> {
-        let tmp: NSAttributedString? = nil
-        let observable = specifiedOptinalValueObservable(value: tmp, queue: .main)
-        observable.add(observer: self) { button, changedAttributedTitle in
-            button.setAttributedTitle(changedAttributedTitle, for: state)
-        }
-        return observable
+    open func subscribeAttributedTitle(for state: UIControl.State) -> NSObjectNilValueObservation<NSAttributedString> {
+        return subscribe(for: { [weak self] in self?.setAttributedTitle($0, for: state) })
     }
 }

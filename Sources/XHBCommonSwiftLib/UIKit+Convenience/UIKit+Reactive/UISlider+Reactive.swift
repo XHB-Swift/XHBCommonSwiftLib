@@ -10,8 +10,7 @@ import XHBFoundationSwiftLib
 
 extension UISlider {
     
-    @discardableResult
-    open func subscribeValue(action: @escaping UIControlEventsAction<UISlider>) -> ValueObservable<Float> {
-        return UIControl.subscribe(control: self, value: self.value, action: action)
+    open var observation: AnyObservable<Float, Never> {
+        return .init(UISlider.Action<UISlider>(output: self, events: .valueChanged).map { $0.value })
     }
 }

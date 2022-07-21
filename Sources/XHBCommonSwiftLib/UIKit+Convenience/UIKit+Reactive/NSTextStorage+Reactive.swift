@@ -16,60 +16,57 @@ extension NSTextStorage {
                                        _ changedInLength: Int) -> Void
 }
 
-open class NSTextStorageDelegateObject: NSObject, NSTextStorageDelegate {
+open class NSTextStorageObservation: NSObject, NSTextStorageDelegate, Observation {
     
-    open var didProcessEditing: NSTextStorage.ProcessEditing?
-    open var willProcessEditing: NSTextStorage.ProcessEditing?
+    public typealias Output = (storage: NSTextStorage,
+                               editedMask: NSTextStorage.EditActions,
+                               editedRange: NSRange,
+                               changedInLength: Int)
+    public typealias Failure = Never
     
-    public init(_ didProcessEditing: NSTextStorage.ProcessEditing? = nil,
-                _ willProcessEditing: NSTextStorage.ProcessEditing? = nil) {
-        self.didProcessEditing = didProcessEditing
-        self.willProcessEditing = willProcessEditing
-    }
+    private var observers: Dictionary<UUID, AnyObserver<Output, Failure>> = .init()
     
     public func textStorage(_ textStorage: NSTextStorage,
                             willProcessEditing editedMask: NSTextStorage.EditActions,
                             range editedRange: NSRange,
                             changeInLength delta: Int) {
-        willProcessEditing?(textStorage, editedMask, editedRange, delta)
+        //textStorage.string;
     }
     
     public func textStorage(_ textStorage: NSTextStorage,
                             didProcessEditing editedMask: NSTextStorage.EditActions,
                             range editedRange: NSRange,
                             changeInLength delta: Int) {
-        didProcessEditing?(textStorage, editedMask, editedRange, delta)
-    }
-}
-
-public class NSTextStorageObserver: ObjCDelegateObserver<NSTextStorage, NSTextStorageDelegate, NSTextStorageDelegateObject> {
-    
-    public override init(_ base: NSTextStorage, _ delegateObject: NSTextStorageDelegateObject) {
-        super.init(base, delegateObject)
-        base.delegate = delegateObject
+        send((textStorage, editedMask, editedRange, delta))
     }
     
-    public convenience init(_ base: NSTextStorage,
-                            _ didProcessEditing: NSTextStorage.ProcessEditing? = nil,
-                            _ willProcessEditing: NSTextStorage.ProcessEditing? = nil) {
-        self.init(base, .init(didProcessEditing, willProcessEditing))
+    public func send(_ signal: Signal) {
+        observers.forEach { $0.value.receive(signal) }
+    }
+    
+    public func send(_ value: Output) {
+        observers.forEach { $0.value.receive(value) }
+    }
+    
+    public func send(_ failure: Failure) {}
+    
+    public func subscribe<Ob>(_ observer: Ob) where Ob : Observer, Failure == Ob.Failure, Output == Ob.Input {
+        observers[observer.identifier] = .init(observer)
+        send(Signals.empty)
     }
 }
 
 extension NSTextStorage {
     
-    @discardableResult
-    open func subscribe<Value>(value: Value? = nil, observer: NSTextStorageObserver) -> ValueObservable<Value?> {
-        let observable = specifiedOptinalValueObservable(value: value, queue: .main)
-        observable.add(observer: observer)
-        return observable
-    }
+    private static var NSTextStorageObservationBindingKey: Void?
     
-    @discardableResult
-    open func subscribe<Value>(value: Value? = nil,
-                               didProcess: ProcessEditing? = nil,
-                               willProcess: ProcessEditing? = nil) -> ValueObservable<Value?> {
-        return subscribe(value: value, observer: .init(self, didProcess, willProcess))
+    open var observation: NSTextStorageObservation {
+        let observation = runtimePropertyLazyBinding(&Self.NSTextStorageObservationBindingKey) {
+            return NSTextStorageObservation()
+        }
+        if delegate == nil {
+            delegate = observation
+        }
+        return observation
     }
-    
 }

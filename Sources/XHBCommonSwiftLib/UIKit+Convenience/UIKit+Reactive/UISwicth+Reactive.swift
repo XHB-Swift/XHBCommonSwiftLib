@@ -10,8 +10,7 @@ import XHBFoundationSwiftLib
 
 extension UISwitch {
     
-    @discardableResult
-    open func subscribeOn(action: @escaping UIControlEventsAction<UISwitch>) -> ValueObservable<Bool> {
-        return UIControl.subscribe(control: self, value: self.isOn, action: action)
+    open var observation: AnyObservable<Bool, Never> {
+        return .init(UISwitch.Action<UISwitch>(output: self, events: .valueChanged).map { $0.isOn })
     }
 }

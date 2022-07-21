@@ -10,17 +10,12 @@ import XHBFoundationSwiftLib
 
 extension UIRefreshControl {
     
-    @discardableResult
-    open func subscribeRefresing(action: @escaping UIControlEventsAction<UIRefreshControl>) -> ValueObservable<Bool> {
-        return UIControl.subscribe(control: self,
-                                   value: self.isRefreshing) { control in
-            if control.isRefreshing {
-                control.beginRefreshing()
-            } else {
-                control.endRefreshing()
-            }
-            action(control)
-        }
+    open var observation: AnyObservable<Bool, Never> {
+        return .init(UIRefreshControl.Action<UIRefreshControl>(output: self,
+                                                               events: [.valueChanged]).map {
+            let isRefreshing = $0.isRefreshing
+            if !isRefreshing { $0.endRefreshing() }
+            return isRefreshing
+        })
     }
-    
 }
