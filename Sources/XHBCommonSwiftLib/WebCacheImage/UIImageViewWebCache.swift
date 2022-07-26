@@ -45,6 +45,16 @@ extension URL: URLType {
     public var url: URL? { return self }
 }
 
+extension CGImage {
+    
+    open var containsAlpha: Bool {
+        return !(alphaInfo == .none ||
+                 alphaInfo == .noneSkipFirst ||
+                 alphaInfo == .noneSkipLast)
+    }
+    
+}
+
 extension UIImage {
     
     public convenience init?(url: URLType, to size: CGSize, scale: ImageScale = .auto) {
@@ -82,6 +92,8 @@ extension UIImage {
             }
             let width = imageRef.width
             let height = imageRef.height
+            var bitmapInfo: UInt32 = CGBitmapInfo.byteOrder32Little.rawValue
+            bitmapInfo |= imageRef.containsAlpha ? CGImageAlphaInfo.premultipliedFirst.rawValue : CGImageAlphaInfo.noneSkipFirst.rawValue
             let bytesPerRow = kBytesPerPixel * width
             guard let context = CGContext(data: nil,
                                           width: width,
@@ -89,7 +101,7 @@ extension UIImage {
                                           bitsPerComponent: kBitsPerComponent,
                                           bytesPerRow: bytesPerRow,
                                           space: colorSpaceRef,
-                                          bitmapInfo: CGImageByteOrderInfo.order32Big.rawValue) else {
+                                          bitmapInfo: bitmapInfo) else {
                 resultWithoutAplha = self
                 return
             }
