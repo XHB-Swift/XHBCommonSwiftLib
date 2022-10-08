@@ -47,7 +47,7 @@ extension URL: URLType {
 
 extension CGImage {
     
-    open var containsAlpha: Bool {
+    public var containsAlpha: Bool {
         return !(alphaInfo == .none ||
                  alphaInfo == .noneSkipFirst ||
                  alphaInfo == .noneSkipLast)
