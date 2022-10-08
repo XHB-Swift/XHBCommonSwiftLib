@@ -68,7 +68,7 @@ extension UIImage {
         self.init(cgImage: downsampledImage)
     }
     
-    open var decoded: UIImage? {
+    public var decoded: UIImage? {
         if !shouldDecode {
             return self
         }
@@ -103,7 +103,7 @@ extension UIImage {
         return resultWithoutAplha
     }
     
-    open var shouldDecode: Bool {
+    public var shouldDecode: Bool {
         if images != nil {
             return false
         }
@@ -115,9 +115,9 @@ extension UIImage {
                  alphaInfo == .premultipliedLast)
     }
     
-    open class func fetchImage(with url: URLType,
-                               thumbnail: ThumbnailConfig = .noThumbnail,
-                               completion: ImageLoadCompletion? = nil) {
+    public class func fetchImage(with url: URLType,
+                                 thumbnail: ThumbnailConfig = .noThumbnail,
+                                 completion: ImageLoadCompletion? = nil) {
         guard let urlString = url.url?.absoluteString else { return }
         fetchCachedFile(with: urlString, dirName: "ImageCache") { result in
             switch result {
@@ -144,7 +144,7 @@ extension UIImage {
     }
     
     @available(iOS 13.0, *)
-    open class func fetchAsyncImage(with url: URLType, thumbnail: ThumbnailConfig = .noThumbnail) async throws -> UIImage {
+    public class func fetchAsyncImage(with url: URLType, thumbnail: ThumbnailConfig = .noThumbnail) async throws -> UIImage {
         return try await withTaskCancellationHandler(operation: {
             return try await withUnsafeThrowingContinuation({ continuation in
                 fetchImage(with: url, thumbnail: thumbnail) { result in
@@ -164,7 +164,7 @@ extension UIImage {
 
 extension UIImageView {
     
-    open func setImage(with url: URLType,
+    public func setImage(with url: URLType,
                        thumbnail: ThumbnailConfig = .noThumbnail,
                        completion: ImageLoadCompletion? = nil) {
         if #available(iOS 13, *) {

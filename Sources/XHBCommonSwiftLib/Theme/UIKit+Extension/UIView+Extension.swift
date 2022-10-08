@@ -17,7 +17,7 @@ extension String {
 
 extension UIView {
     
-    open var theme_alpha: ThemeCGFloat? {
+    public var theme_alpha: ThemeCGFloat? {
         set {
             set(theme: newValue, for: .sel_alpha)
         }
@@ -26,7 +26,7 @@ extension UIView {
         }
     }
     
-    open var theme_tintColor: ThemeColor? {
+    public var theme_tintColor: ThemeColor? {
         set {
             set(theme: newValue, for: .sel_tintColor)
         }
@@ -35,7 +35,7 @@ extension UIView {
         }
     }
     
-    open var theme_backgroundColor: ThemeColor? {
+    public var theme_backgroundColor: ThemeColor? {
         set {
             set(theme: newValue, for: .sel_backgroundColor)
         }

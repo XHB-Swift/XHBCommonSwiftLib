@@ -55,19 +55,19 @@ extension NotificationCenter {
         }
     }
     
-    open func add(themeObserver: NSObject, selector: Selector, name: Notification.Name) {
+    public func add(themeObserver: NSObject, selector: Selector, name: Notification.Name) {
         guard !themeObservers.contains(themeObserver) else { return }
         addObserver(themeObserver, selector: selector, name: name, object: nil)
         themeObservers.insert(themeObserver)
     }
     
-    open func remove(themeObserver: NSObject, name: Notification.Name? = nil) {
+    public func remove(themeObserver: NSObject, name: Notification.Name? = nil) {
         guard themeObservers.contains(themeObserver) else { return }
         removeObserver(themeObserver, name: name, object: nil)
         themeObservers.remove(themeObserver)
     }
     
-    open func removeAllThemeObservers() {
+    public func removeAllThemeObservers() {
         if themeObservers.isEmpty { return }
         themeObservers.forEach { themeObserver in
             removeObserver(themeObserver)
@@ -98,7 +98,7 @@ extension NSObject {
         }
     }
     
-    open var currentThemeType: String {
+    public var currentThemeType: String {
         set {
             let themeType = objc_getAssociatedObject(self, &NSObject.ThemeTypeCurrentKey) as? String
             objc_setAssociatedObject(self, &NSObject.ThemeTypeCurrentKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
@@ -115,7 +115,7 @@ extension NSObject {
         }
     }
     
-    open func set(theme: Theme?, for selector: String) {
+    public func set(theme: Theme?, for selector: String) {
         guard let theme = theme else { return }
         if theme.type == currentThemeType {
             update(theme: theme, key: selector)
@@ -128,14 +128,14 @@ extension NSObject {
         themeInfo[selector] = themes
     }
     
-    open func theme(for selector: String) -> Theme? {
+    public func theme(for selector: String) -> Theme? {
         guard let themes = themeInfo[selector] else {
             return nil
         }
         return themes.filter { $0.type == currentThemeType }.first
     }
     
-    open func update(theme: Theme?, key: String) {
+    public func update(theme: Theme?, key: String) {
         guard let theme = theme else { return }
         let selector = Selector(key)
         guard responds(to: selector) else { return }

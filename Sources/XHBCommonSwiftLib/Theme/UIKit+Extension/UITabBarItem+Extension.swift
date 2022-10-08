@@ -15,7 +15,7 @@ extension String {
 
 extension UITabBarItem {
     
-    open var theme_selectedImage: ThemeImage? {
+    public var theme_selectedImage: ThemeImage? {
         set {
             set(theme: newValue, for: .sel_selectedImage)
         }

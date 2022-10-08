@@ -10,7 +10,7 @@ import XHBFoundationSwiftLib
 
 extension UIStepper {
     
-    open var observation: AnyObservable<Double, Never> {
+    public var observation: AnyObservable<Double, Never> {
         return .init(UIStepper.Action<UIStepper>(output: self, events: .valueChanged).map { $0.value })
     }
 }

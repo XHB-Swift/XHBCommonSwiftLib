@@ -10,7 +10,7 @@ import XHBFoundationSwiftLib
 
 extension UISlider {
     
-    open var observation: AnyObservable<Float, Never> {
+    public var observation: AnyObservable<Float, Never> {
         return .init(UISlider.Action<UISlider>(output: self, events: .valueChanged).map { $0.value })
     }
 }

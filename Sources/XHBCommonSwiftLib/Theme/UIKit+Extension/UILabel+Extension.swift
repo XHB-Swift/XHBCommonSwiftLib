@@ -23,7 +23,7 @@ extension String {
 
 extension UILabel {
     
-    open var theme_text: ThemeText? {
+    public var theme_text: ThemeText? {
         set {
             set(theme: newValue, for: .SEL_UILabel.sel_text)
         }
@@ -32,7 +32,7 @@ extension UILabel {
         }
     }
     
-    open var theme_font: ThemeFont? {
+    public var theme_font: ThemeFont? {
         set {
             set(theme: newValue, for: .SEL_UILabel.sel_font)
         }
@@ -41,7 +41,7 @@ extension UILabel {
         }
     }
     
-    open var theme_richText: ThemeRichText? {
+    public var theme_richText: ThemeRichText? {
         set {
             set(theme: newValue, for: .SEL_UILabel.sel_attributedText)
         }
@@ -50,7 +50,7 @@ extension UILabel {
         }
     }
     
-    open var theme_alignment: ThemeInt? {
+    public var theme_alignment: ThemeInt? {
         set {
             set(theme: newValue, for: .SEL_UILabel.sel_textAlignment)
         }
@@ -59,7 +59,7 @@ extension UILabel {
         }
     }
     
-    open var theme_textColor: ThemeColor? {
+    public var theme_textColor: ThemeColor? {
         set {
             set(theme: newValue, for: .SEL_UILabel.sel_textColor)
         }

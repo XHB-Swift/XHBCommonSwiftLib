@@ -297,7 +297,7 @@ fileprivate final class CustomModalAnimationManager {
 
 extension UIViewController {
     
-    open func presentCustomModal(viewController: UIViewController,
+    public func presentCustomModal(viewController: UIViewController,
                                  configuration: CustomModalTransitioningConfiguration?,
                                  completion: (()->Void)?) {
         
@@ -311,7 +311,7 @@ extension UIViewController {
         present(viewController, animated: true, completion: completion)
     }
     
-    open func dismissCustomModal(animated: Bool, completion: (()->Void)?) {
+    public func dismissCustomModal(animated: Bool, completion: (()->Void)?) {
         let vc = presentedViewController ?? self
         let key = "\(vc)"
         vc.dismiss(animated: animated) {
@@ -320,7 +320,7 @@ extension UIViewController {
         }
     }
     
-    open func show(viewController: UIViewController, config: CustomModalTransitioningConfiguration) {
+    public func show(viewController: UIViewController, config: CustomModalTransitioningConfiguration) {
         guard let targetView = viewController.view else { return }
         CustomModalAnimationManager.shared.setAnimation(config, for: "\(viewController)")
         addChild(viewController)
@@ -331,7 +331,7 @@ extension UIViewController {
         enterAnimate?.doAnimation(view, targetView, nil)
     }
     
-    open func disappear() {
+    public func disappear() {
         let key = "\(self)"
         let completion = { [weak self] in
             self?.removeFromParent()

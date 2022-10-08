@@ -10,11 +10,11 @@ import XHBFoundationSwiftLib
 
 extension UITextView {
     
-    open var textObservation: AnyObservable<String, Never> {
+    public var textObservation: AnyObservable<String, Never> {
         return .init(textStorage.observation.map { $0.storage.string })
     }
     
-    open var attributedTextObservation: AnyObservable<NSAttributedString, Never> {
+    public var attributedTextObservation: AnyObservable<NSAttributedString, Never> {
         return .init(textStorage.observation.map { $0.storage })
     }
 }

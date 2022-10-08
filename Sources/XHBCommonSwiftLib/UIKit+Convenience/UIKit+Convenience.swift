@@ -11,7 +11,7 @@ import XHBFoundationSwiftLib
 
 extension UIView {
     
-    open var x: CGFloat {
+    public var x: CGFloat {
         
         set {
             self.frame.origin.x = newValue
@@ -22,7 +22,7 @@ extension UIView {
         }
     }
     
-    open var y: CGFloat {
+    public var y: CGFloat {
         
         set {
             self.frame.origin.y = newValue
@@ -34,7 +34,7 @@ extension UIView {
         
     }
     
-    open var midX: CGFloat {
+    public var midX: CGFloat {
         
         set {
             self.frame.origin.x = newValue - self.frame.width / 2
@@ -45,7 +45,7 @@ extension UIView {
         }
     }
     
-    open var midY: CGFloat {
+    public var midY: CGFloat {
         
         set {
             self.frame.origin.y = newValue - self.frame.height / 2
@@ -56,7 +56,7 @@ extension UIView {
         }
     }
     
-    open var right: CGFloat {
+    public var right: CGFloat {
         
         set {
             self.frame.origin.x = newValue - self.frame.width
@@ -67,7 +67,7 @@ extension UIView {
         }
     }
     
-    open var bottom: CGFloat {
+    public var bottom: CGFloat {
         
         set {
             self.frame.origin.y = newValue - self.frame.height
@@ -78,7 +78,7 @@ extension UIView {
         }
     }
     
-    open var width: CGFloat {
+    public var width: CGFloat {
         
         set {
             self.frame.size.width = newValue
@@ -89,7 +89,7 @@ extension UIView {
         }
     }
     
-    open var height: CGFloat {
+    public var height: CGFloat {
         
         set {
             self.frame.size.height = newValue
@@ -100,7 +100,7 @@ extension UIView {
         }
     }
     
-    open var origin: CGPoint {
+    public var origin: CGPoint {
         
         set {
             self.frame.origin = newValue
@@ -111,7 +111,7 @@ extension UIView {
         }
     }
     
-    open var size: CGSize {
+    public var size: CGSize {
         
         set {
             self.frame.size = newValue
@@ -122,7 +122,7 @@ extension UIView {
         }
     }
     
-    open var centerX: CGFloat {
+    public var centerX: CGFloat {
         
         set {
             self.center.x = newValue
@@ -133,7 +133,7 @@ extension UIView {
         }
     }
     
-    open var centerY: CGFloat {
+    public var centerY: CGFloat {
         
         set {
             self.center.y = newValue
@@ -153,7 +153,7 @@ extension UIView {
         }
     }
     
-    open func add(subview: UIView, for levelWeight: Int) {
+    public func add(subview: UIView, for levelWeight: Int) {
         if subviews.contains(subview) {
             subview.removeFromSuperview()
         }
@@ -192,7 +192,7 @@ extension UIButton {
 
 extension UIWindow {
     
-    open class var currentWindow: UIWindow? {
+    public class var currentWindow: UIWindow? {
         
         let app = UIApplication.shared
         

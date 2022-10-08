@@ -10,7 +10,7 @@ import XHBFoundationSwiftLib
 
 extension UIRefreshControl {
     
-    open var observation: AnyObservable<Bool, Never> {
+    public var observation: AnyObservable<Bool, Never> {
         return .init(UIRefreshControl.Action<UIRefreshControl>(output: self,
                                                                events: [.valueChanged]).map {
             let isRefreshing = $0.isRefreshing

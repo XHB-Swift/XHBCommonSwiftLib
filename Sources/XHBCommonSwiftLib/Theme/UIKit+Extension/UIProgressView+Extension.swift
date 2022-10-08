@@ -16,7 +16,7 @@ extension String {
 
 extension UIProgressView {
     
-    open var theme_trackTintColor: ThemeColor? {
+    public var theme_trackTintColor: ThemeColor? {
         set {
             set(theme: newValue, for: .sel_trackTintColor)
         }
@@ -25,7 +25,7 @@ extension UIProgressView {
         }
     }
     
-    open var theme_progressTintColor: ThemeColor? {
+    public var theme_progressTintColor: ThemeColor? {
         set {
             set(theme: newValue, for: .sel_progressTintColor)
         }

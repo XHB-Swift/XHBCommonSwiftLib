@@ -10,7 +10,7 @@ import XHBFoundationSwiftLib
 
 extension UIActivityIndicatorView {
     
-    open func subscribeAnimating(before: ((Bool) -> Void)? = nil,
+    public func subscribeAnimating(before: ((Bool) -> Void)? = nil,
                                  after: ((Bool) -> Void)? = nil) -> NSObjectValueObservation<Bool> {
         return subscribe(for: isAnimating, action: { [weak self] in
             before?($0)

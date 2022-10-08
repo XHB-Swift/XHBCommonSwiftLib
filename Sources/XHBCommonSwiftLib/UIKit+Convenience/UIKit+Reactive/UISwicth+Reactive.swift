@@ -10,7 +10,7 @@ import XHBFoundationSwiftLib
 
 extension UISwitch {
     
-    open var observation: AnyObservable<Bool, Never> {
+    public var observation: AnyObservable<Bool, Never> {
         return .init(UISwitch.Action<UISwitch>(output: self, events: .valueChanged).map { $0.isOn })
     }
 }

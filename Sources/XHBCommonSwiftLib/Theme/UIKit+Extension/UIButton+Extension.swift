@@ -21,7 +21,7 @@ extension String {
 
 extension UIButton {
     
-    open var theme_titleState: ThemeState? {
+    public var theme_titleState: ThemeState? {
         set {
             set(theme: newValue, for: .SEL_UIButton.sel_setTitleForState)
         }
@@ -30,7 +30,7 @@ extension UIButton {
         }
     }
     
-    open var theme_imageState: ThemeState? {
+    public var theme_imageState: ThemeState? {
         set {
             set(theme: newValue, for: .SEL_UIButton.sel_setImageForState)
         }
@@ -39,7 +39,7 @@ extension UIButton {
         }
     }
     
-    open var theme_richTextState: ThemeState? {
+    public var theme_richTextState: ThemeState? {
         set {
             set(theme: newValue, for: .SEL_UIButton.sel_setAttributedTitleForState)
         }
@@ -48,7 +48,7 @@ extension UIButton {
         }
     }
     
-    open var theme_backgroundImageState: ThemeState? {
+    public var theme_backgroundImageState: ThemeState? {
         set {
             set(theme: newValue, for: .SEL_UIButton.sel_setBackgroundImageForState)
         }

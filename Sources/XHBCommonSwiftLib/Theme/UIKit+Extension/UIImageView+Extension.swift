@@ -17,7 +17,7 @@ extension String {
 
 extension UIImageView {
     
-    open var theme_image: ThemeImage? {
+    public var theme_image: ThemeImage? {
         set {
             set(theme: newValue, for: .SEL_UIImageView.sel_setImage)
         }

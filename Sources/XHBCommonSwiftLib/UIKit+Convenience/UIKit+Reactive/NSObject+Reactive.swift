@@ -22,7 +22,7 @@ extension NSObject {
     
     private static var NSObjectValueBindingSetKey: Void?
     
-    open var customCancellableSet: Set<AnyCancellable> {
+    public var customCancellableSet: Set<AnyCancellable> {
         set {
             runtimePropertyLazyBinding(&Self.NSObjectValueBindingSetKey, { _NSObjectSetBox() })._box.formUnion(newValue)
         }
@@ -31,7 +31,7 @@ extension NSObject {
         }
     }
     
-    open func subscribe<T>(for defaultValue: T, action: @escaping (T) -> Void) -> NSObjectValueObservation<T> {
+    public func subscribe<T>(for defaultValue: T, action: @escaping (T) -> Void) -> NSObjectValueObservation<T> {
         let observable = CurrentValueNeverObservation<T>(defaultValue)
         observable
             .receive(on: DispatchScheduler.main)
@@ -40,7 +40,7 @@ extension NSObject {
         return observable
     }
     
-    open func subscribe<T>(for action: @escaping (T?) -> Void) -> NSObjectNilValueObservation<T> {
+    public func subscribe<T>(for action: @escaping (T?) -> Void) -> NSObjectNilValueObservation<T> {
         let observable = CurrentValueNeverObservation<T?>(nil)
         observable
             .receive(on: DispatchScheduler.main)

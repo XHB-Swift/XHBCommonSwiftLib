@@ -26,7 +26,7 @@ extension String {
 
 extension UITabBar {
     
-    open var theme_barStyle: ThemeInt? {
+    public var theme_barStyle: ThemeInt? {
         set {
             set(theme: newValue, for: .sel_barStyle)
         }
@@ -35,7 +35,7 @@ extension UITabBar {
         }
     }
     
-    open var theme_barTintColor: ThemeColor? {
+    public var theme_barTintColor: ThemeColor? {
         set {
             set(theme: newValue, for: .sel_barTintColor)
         }
@@ -44,7 +44,7 @@ extension UITabBar {
         }
     }
     
-    open var theme_unselectedItemTintColor: ThemeColor? {
+    public var theme_unselectedItemTintColor: ThemeColor? {
         set {
             set(theme: newValue, for: .sel_unselectedItemTintColor)
         }
@@ -54,7 +54,7 @@ extension UITabBar {
     }
     
     @available(iOS 13.0, *)
-    open var theme_standardAppearance: ThemeTabBarAppearance? {
+    public var theme_standardAppearance: ThemeTabBarAppearance? {
         set {
             set(theme: newValue, for: .sel_standardAppearance)
         }
@@ -64,7 +64,7 @@ extension UITabBar {
     }
     
     @available(iOS 13.0, *)
-    open var theme_compactAppearance: ThemeTabBarAppearance? {
+    public var theme_compactAppearance: ThemeTabBarAppearance? {
         set {
             set(theme: newValue, for: .sel_compactAppearance)
         }
@@ -74,7 +74,7 @@ extension UITabBar {
     }
     
     @available(iOS 13.0, *)
-    open var theme_scrollEdgeAppearance: ThemeTabBarAppearance? {
+    public var theme_scrollEdgeAppearance: ThemeTabBarAppearance? {
         set {
             set(theme: newValue, for: .sel_scrollEdgeAppearance)
         }

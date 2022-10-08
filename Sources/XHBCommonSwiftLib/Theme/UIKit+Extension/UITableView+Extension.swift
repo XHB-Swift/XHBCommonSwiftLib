@@ -17,7 +17,7 @@ extension String {
 
 extension UITableView {
     
-    open var theme_separatorColor: ThemeColor? {
+    public var theme_separatorColor: ThemeColor? {
         set {
             set(theme: newValue, for: .sel_separatorColor)
         }
@@ -26,7 +26,7 @@ extension UITableView {
         }
     }
     
-    open var theme_sectionIndexColor: ThemeColor? {
+    public var theme_sectionIndexColor: ThemeColor? {
         set {
             set(theme: newValue, for: .sel_sectionIndexColor)
         }
@@ -35,7 +35,7 @@ extension UITableView {
         }
     }
     
-    open var theme_sectionIndexBackgroundColor: ThemeColor? {
+    public var theme_sectionIndexBackgroundColor: ThemeColor? {
         set {
             set(theme: newValue, for: .sel_sectionIndexBackgroundColor)
         }

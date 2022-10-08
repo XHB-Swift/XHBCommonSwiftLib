@@ -17,7 +17,7 @@ extension String {
 
 extension UISearchBar {
     
-    open var theme_barStyle: ThemeInt? {
+    public var theme_barStyle: ThemeInt? {
         set {
             set(theme: newValue, for: .sel_barStyle)
         }
@@ -26,7 +26,7 @@ extension UISearchBar {
         }
     }
     
-    open var theme_barTintColor: ThemeColor? {
+    public var theme_barTintColor: ThemeColor? {
         set {
             set(theme: newValue, for: .sel_barTintColor)
         }
@@ -35,7 +35,7 @@ extension UISearchBar {
         }
     }
     
-    open var theme_keyboardAppearance: ThemeInt? {
+    public var theme_keyboardAppearance: ThemeInt? {
         set {
             set(theme: newValue, for: .sel_keyboardAppearance)
         }

@@ -17,7 +17,7 @@ extension String {
 
 extension UIBarButtonItem {
     
-    open var theme_tintColor: ThemeColor? {
+    public var theme_tintColor: ThemeColor? {
         set {
             set(theme: newValue, for: .SEL_UIBarButtonItem.sel_tintColor)
         }

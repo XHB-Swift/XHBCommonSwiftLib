@@ -18,7 +18,7 @@ extension String {
 
 extension UIBarItem {
     
-    open var theme_image: ThemeImage? {
+    public var theme_image: ThemeImage? {
         set {
             set(theme: newValue, for: .SEL_UIBarItem.sel_setImage)
         }
@@ -27,7 +27,7 @@ extension UIBarItem {
         }
     }
     
-    open var theme_titleTextAttributesForState: ThemeState? {
+    public var theme_titleTextAttributesForState: ThemeState? {
         set {
             set(theme: newValue, for: .SEL_UIBarItem.sel_setTitleTextAttributesForState)
         }

@@ -19,7 +19,7 @@ extension String {
 
 extension UITextField {
     
-    open var theme_font: ThemeFont? {
+    public var theme_font: ThemeFont? {
         set {
             set(theme: newValue, for: .sel_font)
         }
@@ -28,7 +28,7 @@ extension UITextField {
         }
     }
     
-    open var theme_textColor: ThemeColor? {
+    public var theme_textColor: ThemeColor? {
         set {
             set(theme: newValue, for: .sel_textColor)
         }
@@ -37,7 +37,7 @@ extension UITextField {
         }
     }
     
-    open var theme_attributedText: ThemeRichText? {
+    public var theme_attributedText: ThemeRichText? {
         set {
             set(theme: newValue, for: .sel_attributedText)
         }
@@ -46,7 +46,7 @@ extension UITextField {
         }
     }
     
-    open var theme_keyboardAppearance: ThemeInt? {
+    public var theme_keyboardAppearance: ThemeInt? {
         set {
             set(theme: newValue, for: .sel_keyboardAppearance)
         }
@@ -55,7 +55,7 @@ extension UITextField {
         }
     }
     
-    open var theme_attributedPlaceholder: ThemeRichText? {
+    public var theme_attributedPlaceholder: ThemeRichText? {
         set {
             set(theme: newValue, for: .sel_attributedPlaceholder)
         }

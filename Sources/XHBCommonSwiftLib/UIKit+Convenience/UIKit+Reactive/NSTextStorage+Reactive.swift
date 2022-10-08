@@ -60,7 +60,7 @@ extension NSTextStorage {
     
     private static var NSTextStorageObservationBindingKey: Void?
     
-    open var observation: NSTextStorageObservation {
+    public var observation: NSTextStorageObservation {
         let observation = runtimePropertyLazyBinding(&Self.NSTextStorageObservationBindingKey) {
             return NSTextStorageObservation()
         }
